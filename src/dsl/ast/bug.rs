@@ -1,10 +1,12 @@
 use pest::{iterators::Pair, Parser};
 use crate::dsl::parser::parser::{Rule, SCP};
+use crate::dsl::ast::gene::Gene;
 
 #[derive(Debug, Clone)]
 pub struct Bug {
     pub raw: String,
     pub specie: String,
+    pub genes: Vec<Gene>,
 }
 
 impl Bug {
@@ -19,7 +21,14 @@ impl Bug {
             .as_str()
             .to_string();
 
-        Bug { raw, specie }
+        let mut genes = Vec::new();
+        for gene_pair in inner {
+            if gene_pair.as_rule() == Rule::gene {
+                genes.push(Gene::from_pair(gene_pair));
+            }
+        }
+
+        Bug { raw, specie, genes }
     }
 
     pub fn from_string(input: String) -> Self {
@@ -28,6 +37,26 @@ impl Bug {
             .next()
             .expect("No pair found");
         Bug::from_pair(pair)
+    }
+
+    pub fn get_genes(&self) -> &[Gene] {
+        &self.genes
+    }
+
+    pub fn get_specie(&self) -> &str {
+        &self.specie
+    }
+
+    pub fn get_raw(&self) -> &str {
+        &self.raw
+    }
+
+    pub fn has_genes(&self) -> bool {
+        !self.genes.is_empty()
+    }
+
+    pub fn gene_count(&self) -> usize {
+        self.genes.len()
     }
 }
 
@@ -44,6 +73,9 @@ mod tests {
         let parsed = SCP::parse(Rule::bug, &input).unwrap();
         let bug = Bug::from_pair(parsed.into_iter().next().unwrap());
         assert_eq!(bug.raw, "bug Cat");
+        assert_eq!(bug.specie, "Cat");
+        assert_eq!(bug.gene_count(), 0);
+        assert!(!bug.has_genes());
     }
 
     #[test]
@@ -51,6 +83,36 @@ mod tests {
         let input = "bug Dog".to_string();
         let bug = Bug::from_string(input);
         assert_eq!(bug.raw, "bug Dog");
+    }
+
+    #[test]
+    fn test_bug_with_genes() {
+        let input = "bug Cat\n gene protein Dog\n gene enzyme Bird".to_string();
+        let parsed = SCP::parse(Rule::bug, &input).unwrap();
+        let bug = Bug::from_pair(parsed.into_iter().next().unwrap());
+        assert_eq!(bug.get_specie(), "Cat");
+        assert_eq!(bug.gene_count(), 2);
+        assert!(bug.has_genes());
+
+        let genes = bug.get_genes();
+        assert_eq!(genes[0].get_tag().get_raw(), "protein");
+        assert_eq!(genes[0].get_specie().get_raw(), "Dog");
+        assert_eq!(genes[1].get_tag().get_raw(), "enzyme");
+        assert_eq!(genes[1].get_specie().get_raw(), "Bird");
+    }
+
+    #[test]
+    fn test_bug_with_single_gene() {
+        let input = "bug Cat\n gene protein Dog".to_string();
+        let parsed = SCP::parse(Rule::bug, &input).unwrap();
+        let bug = Bug::from_pair(parsed.into_iter().next().unwrap());
+        assert_eq!(bug.get_specie(), "Cat");
+        assert_eq!(bug.gene_count(), 1);
+        assert!(bug.has_genes());
+
+        let genes = bug.get_genes();
+        assert_eq!(genes[0].get_tag().get_raw(), "protein");
+        assert_eq!(genes[0].get_specie().get_raw(), "Dog");
     }
 
     /// testar a sintaxe errada de bug
