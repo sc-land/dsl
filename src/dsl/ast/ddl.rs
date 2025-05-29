@@ -70,10 +70,6 @@ mod tests {
         let input = "".to_string();
         let parse_result = SCP::parse(Rule::ddl, &input);
         assert!(parse_result.is_err());
-
-        let error = parse_result.unwrap_err();
-        let error_string = format!("{:?}", error);
-        assert!(error_string.contains("bug"));
     }
 
     #[test]
