@@ -22,7 +22,7 @@ binds    = { bind ~ (s ~ "," ~ s ~ bind)* }
 sequence = { oop ~ (s ~ "," ~ s ~ oop)* }
 bind     = { tag ~ s ~ ":" ~ s ~ oop }
 
-literal = _{ bit | hex | decimal | int | str }
+literal = { bit | hex | decimal | int | str }
 bit     = @{ "0b" ~ ASCII_BIN_DIGIT+ }
 hex     = @{ "0x" ~ ASCII_HEX_DIGIT+ }
 int     = @{ "-"? ~ ASCII_DIGIT+ }
