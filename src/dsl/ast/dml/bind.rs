@@ -36,10 +36,6 @@ impl Bind {
         Ok(Bind::from_pair(pair))
     }
 
-    pub fn get_raw(&self) -> &str {
-        &self.raw
-    }
-
     pub fn get_tag(&self) -> &str {
         &self.tag
     }
