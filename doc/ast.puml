@@ -53,8 +53,8 @@ package ast {
         +raw Str
     }
 
-    class DDL {
-        +bug Bug
+    enum DDL {
+        Bug
     }
 
     class Bug {

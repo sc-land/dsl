@@ -37,7 +37,7 @@ mod tests {
         let parsed = SCP::parse(Rule::genome, &input).unwrap();
         let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
         if let Genome::DDL(ddl) = genome {
-            assert_eq!(ddl.bug.raw, "bug People");
+            assert_eq!(ddl.get_bug().raw, "bug People");
         } else {
             panic!("Expected DDL variant");
         }

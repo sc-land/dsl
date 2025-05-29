@@ -4,15 +4,15 @@ use crate::dsl::ast::bug::Bug;
 use crate::dsl::parser::parser::{Rule, SCP};
 
 #[derive(Debug, Clone)]
-pub struct DDL {
-    pub bug: Bug,
+pub enum DDL {
+    Bug(Bug),
 }
 
 impl DDL {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
         let inner = pair.into_inner();
         let bug = Bug::from_pair(inner.clone().next().unwrap());
-        DDL { bug }
+        DDL::Bug(bug)
     }
 
     pub fn from_string(input: String) -> Result<Self, Box<dyn std::error::Error>> {
@@ -22,7 +22,9 @@ impl DDL {
     }
 
     pub fn get_bug(&self) -> &Bug {
-        &self.bug
+        match self {
+            DDL::Bug(bug) => bug,
+        }
     }
 }
 
@@ -38,14 +40,14 @@ mod tests {
         let input = "bug Cat".to_string();
         let parsed = SCP::parse(Rule::ddl, &input).unwrap();
         let ddl = DDL::from_pair(parsed.into_iter().next().unwrap());
-        assert_eq!(ddl.bug.raw, "bug Cat");
+        assert_eq!(ddl.get_bug().raw, "bug Cat");
     }
 
     #[test]
     fn parse_ddl_from_valid_string_should_succeed() {
         let input = "bug Dog".to_string();
         let ddl = DDL::from_string(input).unwrap();
-        assert_eq!(ddl.bug.raw, "bug Dog");
+        assert_eq!(ddl.get_bug().raw, "bug Dog");
     }
 
     #[test]
