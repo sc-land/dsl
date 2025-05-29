@@ -15,18 +15,10 @@ impl DDL {
         DDL { bug }
     }
 
-    pub fn from_string(input: String) -> Self {
-        if input.trim().is_empty() {
-            return DDL {
-                bug: Bug { raw: String::new() }
-            };
-        }
-
-        let pair = SCP::parse(Rule::ddl, &input)
-            .expect("Failed to parse input")
-            .next()
-            .expect("No pair found");
-        DDL::from_pair(pair)
+    pub fn from_string(input: String) -> Result<Self, Box<dyn std::error::Error>> {
+        let mut pairs = SCP::parse(Rule::ddl, &input)?;
+        let pair = pairs.next().ok_or("No pair found")?;
+        Ok(DDL::from_pair(pair))
     }
 
     pub fn get_bug(&self) -> &Bug {
@@ -52,43 +44,40 @@ mod tests {
     #[test]
     fn parse_ddl_from_valid_string_should_succeed() {
         let input = "bug Dog".to_string();
-        let ddl = DDL::from_string(input);
+        let ddl = DDL::from_string(input).unwrap();
         assert_eq!(ddl.bug.raw, "bug Dog");
     }
 
     #[test]
     fn get_bug_should_return_parsed_bug_instance() {
         let input = "bug Cat".to_string();
-        let ddl = DDL::from_string(input);
+        let ddl = DDL::from_string(input).unwrap();
         assert_eq!(ddl.get_bug().raw, "bug Cat");
     }
 
     #[test]
-    fn parse_ddl_from_empty_string_should_return_empty_bug() {
+    fn parse_ddl_from_empty_string_should_return_error() {
         let input = "".to_string();
-        let ddl = DDL::from_string(input);
-        assert!(ddl.bug.raw.is_empty());
+        let result = DDL::from_string(input);
+
+        assert!(result.is_err());
     }
 
     #[test]
     fn parse_ddl_from_empty_pair_should_fail() {
         let input = "".to_string();
         let parse_result = SCP::parse(Rule::ddl, &input);
-        assert!(parse_result.is_err(), "Parser deveria falhar com input vazio");
+        assert!(parse_result.is_err());
 
         let error = parse_result.unwrap_err();
         let error_string = format!("{:?}", error);
-        assert!(error_string.contains("bug"), "Erro deveria mencionar que esperava 'bug'");
+        assert!(error_string.contains("bug"));
     }
 
     #[test]
     fn parse_ddl_with_invalid_syntax_should_fail() {
         let input = "bug !Cat".to_string();
-        let parse_result = SCP::parse(Rule::ddl, &input);
-        assert!(parse_result.is_err(), "Parser deveria falhar com sintaxe errada");
-
-        let error = parse_result.unwrap_err();
-        let error_string = format!("{:?}", error);
-        assert!(error_string.contains("bug"), "Erro deveria mencionar que esperava 'bug'");
+        let result = DDL::from_string(input);
+        assert!(result.is_err());
     }
 }
