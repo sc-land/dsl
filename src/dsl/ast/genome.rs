@@ -50,7 +50,7 @@ mod tests {
         let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
         if let Genome::DML(dml) = genome {
             match dml {
-                crate::dsl::ast::dml::DML::Assign(assign) => {
+                DML::Assign(assign) => {
                     assert_eq!(assign.raw, "bug = Bug.happens");
                 }
                 _ => panic!("Expected Assign variant"),
@@ -67,7 +67,7 @@ mod tests {
         let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
         if let Genome::DML(dml) = genome {
             match dml {
-                crate::dsl::ast::dml::DML::Oop(oop) => {
+                DML::Oop(oop) => {
                     assert_eq!(oop.raw, "bug.fly");
                 }
                 _ => panic!("Expected Oop variant"),

@@ -1,36 +1,15 @@
+pub mod assign;
+pub mod oop;
+
 use pest::{iterators::Pair, Parser};
 use crate::dsl::parser::parser::{Rule, SCP};
-
-#[derive(Debug, Clone)]
-pub struct Assign {
-    pub raw: String,
-}
-
-#[derive(Debug, Clone)]
-pub struct Oop {
-    pub raw: String,
-}
+use self::assign::Assign;
+use self::oop::Oop;
 
 #[derive(Debug, Clone)]
 pub enum DML {
     Assign(Assign),
     Oop(Oop),
-}
-
-impl Assign {
-    pub fn from_pair(pair: Pair<Rule>) -> Self {
-        assert_eq!(pair.as_rule(), Rule::assign);
-        let raw = pair.as_str().to_string();
-        Assign { raw }
-    }
-}
-
-impl Oop {
-    pub fn from_pair(pair: Pair<Rule>) -> Self {
-        assert_eq!(pair.as_rule(), Rule::oop);
-        let raw = pair.as_str().to_string();
-        Oop { raw }
-    }
 }
 
 impl DML {
@@ -55,9 +34,7 @@ impl DML {
 #[cfg(test)]
 mod tests {
     use pest::Parser;
-
     use crate::dsl::parser::parser::{Rule, SCP};
-
     use super::*;
 
     #[test]
