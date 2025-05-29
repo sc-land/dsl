@@ -6,6 +6,37 @@ hide circle
 package ast {
     class SC {
         +raw Str
+        +fly Fly
+    }
+
+    class Fly {
+        +raw Str
+        +pogs Pog[]
+    }
+
+    class Pog {
+        +raw Str
+        +genome Genome[]
+    }
+
+    enum Genome {
+        DDL
+        DML
+    }
+
+    class DML {
+        +raw Str
+
+    }
+
+    class DDL {
+        +raw Str
+        +bug Bug
+    }
+
+    class Bug {
+        +raw Str
+        +specie Str
     }
 }
 
@@ -16,5 +47,16 @@ package parser {
 
 parser.Tree --> ast.SC
 parser.Tree --> parser.Parser
+
+ast.SC --> ast.Fly
+
+ast.Fly --> ast.Pog
+
+ast.Pog --> ast.Genome
+
+ast.Genome --> ast.DDL
+ast.Genome --> ast.DML
+
+ast.DDL --> ast.Bug
 
 @enduml
