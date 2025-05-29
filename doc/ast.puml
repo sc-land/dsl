@@ -1,7 +1,5 @@
 @startuml
-
 !theme crt-amber
-
 hide circle
 
 package ast {
@@ -32,20 +30,45 @@ package ast {
 
     class Assign {
         +raw Str
+        +tag Tag
+        +oop Oop
     }
 
     class Oop {
         +raw Str
+        +emitter Emitter
+        +trails Str[]
     }
 
     class DDL {
-        +raw Str
         +bug Bug
     }
 
     class Bug {
         +raw Str
-        +specie Str
+        +specie Specie
+    }
+
+    enum Emitter {
+        Specie
+        Tag
+        Literal
+    }
+
+    enum Literal {
+        Bit
+        Hex
+        Int
+        Str
+        Decimal
+    }
+
+    class Specie {
+        +raw Str
+    }
+
+    class Tag {
+        +raw Str
     }
 }
 
@@ -70,5 +93,15 @@ ast.DML --> ast.Assign
 ast.DML --> ast.Oop
 
 ast.DDL --> ast.Bug
+
+ast.Assign --> ast.Oop
+ast.Assign --> ast.Tag
+ast.Oop --> ast.Emitter
+
+ast.Emitter --> ast.Literal
+ast.Emitter --> ast.Tag
+ast.Emitter --> ast.Specie
+
+ast.Bug --> ast.Specie
 
 @enduml

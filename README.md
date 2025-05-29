@@ -1,122 +1,92 @@
 # SC DSL
 
-## Grammar
+Uma Domain-Specific Language (DSL) implementada em Rust usando Pest para parsing.
 
-```pest
-sc     = { SOI ~ fly ~ EOI }
-fly    = { (pog ~ nl)+ }
-pog    = { genome+ }
-genome = { ddl | dml }
+## 📖 Visão Geral
 
-ddl = { bug }
-dml = { assign | oop }
+Este projeto implementa um DSL com suporte a:
+- **DDL (Data Definition Language)**: Definição de estruturas (`bug`)
+- **DML (Data Manipulation Language)**: Operações e atribuições
+- **Literais**: Suporte a inteiros, hexadecimais, binários, decimais e strings
+- **Operações**: Chamadas de métodos e atribuições
 
-bug  = { "bug" ~ s ~ specie ~ nl ~ gene* }
-gene = { s ~ "gene" ~ s ~ tag ~ s ~ specie ~ NEWLINE* }
+## 🚀 Instalação e Uso
 
-assign = { tag ~ s ~ "=" ~ s ~ oop }
+### Pré-requisitos
+- Rust 1.75+ (edition 2024)
 
-oop      = { emitter ~ trail* }
-emitter  = { specie | tag | literal }
-trail    = { catalysis | carrier }
-
-catalysis = { "." ~ tag ~ carrier? }
-carrier   = { "(" ~ s ~ (binds | sequence)? ~ s ~ ")" }
-
-binds    = { bind ~ (s ~ "," ~ s ~ bind)* }
-sequence = { oop ~ (s ~ "," ~ s ~ oop)* }
-bind     = { tag ~ s ~ ":" ~ s ~ oop }
-
-literal = _{ bit | hex | decimal | int | str }
-bit     = @{ "0b" ~ ASCII_BIN_DIGIT+ }
-hex     = @{ "0x" ~ ASCII_HEX_DIGIT+ }
-int     = @{ "-"? ~ ASCII_DIGIT+ }
-str     = @{ "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
-decimal = @{ "-"? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
-
-tag    = { ASCII_ALPHA_LOWER ~ (ASCII_ALPHANUMERIC | "_")* }
-specie = { ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC)+ }
-
-nl = _{ NEWLINE* }
-s  = _{ (" " | "\t" | "\n" )* }
-
+### Compilar o projeto
+```bash
+cargo build
 ```
 
-## AST
-
-```puml
-@startuml
-!theme crt-amber
-
-hide circle
-
-package ast {
-    class SC {
-        +raw Str
-        +fly Fly
-    }
-
-    class Fly {
-        +raw Str
-        +pogs Pog[]
-    }
-
-    class Pog {
-        +raw Str
-        +genome Genome[]
-    }
-
-    enum Genome {
-        DDL
-        DML
-    }
-
-    enum DML {
-        Assign
-        Oop
-    }
-
-    class Assign {
-        +raw Str
-    }
-
-    class Oop {
-        +raw Str
-
-    }
-
-    class DDL {
-        +raw Str
-        +bug Bug
-    }
-
-    class Bug {
-        +raw Str
-        +specie Str
-    }
-}
-
-package parser {
-    class Parser
-    class Tree
-}
-
-parser.Tree --> ast.SC
-parser.Tree --> parser.Parser
-
-ast.SC --> ast.Fly
-
-ast.Fly --> ast.Pog
-
-ast.Pog --> ast.Genome
-
-ast.Genome --> ast.DDL
-ast.Genome --> ast.DML
-
-ast.DML --> ast.Assign
-ast.DML --> ast.Oop
-
-ast.DDL --> ast.Bug
-
-@enduml
+### Executar os testes
+```bash
+cargo test
 ```
+
+## 📝 Sintaxe Básica
+
+### Definições (DDL)
+```
+bug Cat
+bug Dog
+```
+
+### Atribuições (DML)
+```
+variable = Value.method
+result = Class.call(param: value)
+```
+
+### Literais suportados
+```
+42          # inteiro
+0xFF        # hexadecimal
+0b1010      # binário
+3.14        # decimal
+"hello"     # string
+```
+
+### Operações
+```
+Class.method
+Object.call(arg1, arg2)
+method(param: value)
+```
+
+## 🏗️ Estrutura do Projeto
+
+- **Grammar**: A gramática está definida em [`src/dsl/sc.dsl`](src/dsl/sc.dsl)
+- **AST**: Árvore sintática abstrata em [`src/dsl/ast/`](src/dsl/ast/)
+- **Parser**: Implementação do parser em [`src/dsl/parser/`](src/dsl/parser/)
+- **Tests**: Testes unitários e de integração em [`tests/`](tests/)
+
+## 📊 Arquitetura
+
+O DSL é organizado hierarquicamente:
+```
+SC → Fly → Pog → Genome → {DDL | DML}
+```
+
+- **SC**: Nó raiz da sintaxe
+- **Fly**: Contêiner de blocos de código
+- **Pog**: Agrupamento de genomas
+- **Genome**: Unidade básica (DDL ou DML)
+
+## 🧪 Exemplos de Uso
+
+```rust
+use sc_dsl::dsl::parser::parser::{Rule, SCP};
+use pest::Parser;
+
+// Parse uma expressão simples
+let input = "bug Cat";
+let result = SCP::parse(Rule::bug, input);
+assert!(result.is_ok());
+```
+
+## 📚 Documentação
+
+- **AST**: Diagrama da AST em [`doc/ast.puml`](doc/ast.puml)
+- **Grammar**: Especificação completa em [`src/dsl/sc.dsl`](src/dsl/sc.dsl)
