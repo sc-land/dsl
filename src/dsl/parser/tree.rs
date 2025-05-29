@@ -7,15 +7,18 @@ use thiserror::Error;
 pub enum TreeParseError {
     #[error("SC Parsing failed{0}")]
     PestError(#[from] pest::error::Error<Rule>),
+    #[error("Falha ao processar árvore vazia")]
+    EmptyTree,
 }
 
-#[derive(Debug)]
+
+#[derive(Debug, Clone)]
 pub struct Tree {
     pub sc: SC,
 }
 
 impl Tree {
-    pub fn parse_sc(input: String) -> Result<Self, TreeParseError> {
+    pub fn parse_input(input: String) -> Result<Self, TreeParseError> {
         let parsed = SCP::parse(Rule::sc, &input);
         match parsed {
             Ok(parsed) => {
@@ -24,5 +27,20 @@ impl Tree {
             }
             Err(e) => Err(TreeParseError::from(e)),
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_empty_input() {
+        let input = "".to_string();
+        let result = Tree::parse_input(input);
+        assert!(result.is_err());
+        assert!(matches!(result.unwrap_err(), TreeParseError::PestError(_)));
+
     }
 }
