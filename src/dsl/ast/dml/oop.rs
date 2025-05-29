@@ -4,16 +4,27 @@ use crate::dsl::ast::literal::Literal;
 
 #[derive(Debug, Clone)]
 pub enum Emitter {
-    Specie { raw: String },
-    Tag { raw: String },
+    Specie(Specie),
+    Tag(Tag),
     Literal(Literal),
 }
+
+
+#[derive(Debug, Clone)]
+pub struct Specie {
+    pub raw: String,
+}
+#[derive(Debug, Clone)]
+pub struct Tag {
+    pub raw: String,
+}
+
 
 impl Emitter {
     pub fn get_raw(&self) -> &str {
         match self {
-            Emitter::Specie { raw } => raw,
-            Emitter::Tag { raw } => raw,
+            Emitter::Specie(specie) => &specie.raw,
+            Emitter::Tag(tag) => &tag.raw,
             Emitter::Literal(literal) => literal.get_raw(),
         }
     }
@@ -58,8 +69,8 @@ impl Oop {
             // Se é uma regra emitter, pega a regra interna
             let inner_emitter = emitter_pair.into_inner().next().expect("Emitter deve ter uma regra interna");
             match inner_emitter.as_rule() {
-                Rule::specie => Emitter::Specie { raw: inner_emitter.as_str().to_string() },
-                Rule::tag => Emitter::Tag { raw: inner_emitter.as_str().to_string() },
+                Rule::specie => Emitter::Specie(Specie { raw: inner_emitter.as_str().to_string() }),
+                Rule::tag => Emitter::Tag(Tag { raw: inner_emitter.as_str().to_string() }),
                 Rule::bit | Rule::hex | Rule::decimal | Rule::int | Rule::str => {
                     Emitter::Literal(Literal::from_pair(inner_emitter))
                 },
@@ -71,8 +82,8 @@ impl Oop {
         } else {
             // Se não é uma regra emitter, trata diretamente
             match emitter_pair.as_rule() {
-                Rule::specie => Emitter::Specie { raw: emitter_pair.as_str().to_string() },
-                Rule::tag => Emitter::Tag { raw: emitter_pair.as_str().to_string() },
+                Rule::specie => Emitter::Specie(Specie { raw: emitter_pair.as_str().to_string() }),
+                Rule::tag => Emitter::Tag(Tag { raw: emitter_pair.as_str().to_string() }),
                 Rule::bit | Rule::hex | Rule::decimal | Rule::int | Rule::str => {
                     Emitter::Literal(Literal::from_pair(emitter_pair))
                 },
