@@ -2,11 +2,11 @@ pub struct TestHelper;
 
 impl TestHelper {
     pub fn get_valid_input() -> String {
-        "a".to_string()
+        "bug.men".to_string()
     }
 
     pub fn get_invalid_input() -> String {
-        "9".to_string()
+        "bug.9".to_string()
     }
 
     pub fn get_test_cases() -> Vec<(String, bool)> {

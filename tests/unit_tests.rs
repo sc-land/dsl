@@ -22,13 +22,13 @@ fn does_not_work() {
 #[test]
 fn parse_tree_works() {
     let input = TestHelper::get_valid_input();
-    let parsed = Tree::parse_sc(input);
+    let parsed = Tree::parse_input(input);
     assert!(parsed.is_ok(), "?");
 }
 
 #[test]
 fn parse_tree_does_not_works() {
     let input = TestHelper::get_invalid_input();
-    let parsed = Tree::parse_sc(input);
+    let parsed = Tree::parse_input(input);
     assert!(parsed.is_err(), "The parser should fail when given a number");
 }
