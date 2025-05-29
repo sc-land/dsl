@@ -1,53 +1,6 @@
 use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
-use crate::dsl::ast::literal::Literal;
-
-#[derive(Debug, Clone)]
-pub enum Emitter {
-    Specie(Specie),
-    Tag(Tag),
-    Literal(Literal),
-}
-
-
-#[derive(Debug, Clone)]
-pub struct Specie {
-    pub raw: String,
-}
-#[derive(Debug, Clone)]
-pub struct Tag {
-    pub raw: String,
-}
-
-
-impl Emitter {
-    pub fn get_raw(&self) -> &str {
-        match self {
-            Emitter::Specie(specie) => &specie.raw,
-            Emitter::Tag(tag) => &tag.raw,
-            Emitter::Literal(literal) => literal.get_raw(),
-        }
-    }
-
-    pub fn is_specie(&self) -> bool {
-        matches!(self, Emitter::Specie { .. })
-    }
-
-    pub fn is_tag(&self) -> bool {
-        matches!(self, Emitter::Tag { .. })
-    }
-
-    pub fn is_literal(&self) -> bool {
-        matches!(self, Emitter::Literal(_))
-    }
-
-    pub fn as_literal(&self) -> Option<&Literal> {
-        match self {
-            Emitter::Literal(literal) => Some(literal),
-            _ => None,
-        }
-    }
-}
+use crate::dsl::ast::emitter::{Emitter, Literal, Specie, Tag};
 
 #[derive(Debug, Clone)]
 pub struct Oop {
