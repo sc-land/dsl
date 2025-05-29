@@ -1,10 +1,14 @@
 pub mod assign;
 pub mod oop;
+pub mod trail;
 
 use pest::{iterators::Pair, Parser};
 use crate::dsl::parser::parser::{Rule, SCP};
 use self::assign::Assign;
 use self::oop::Oop;
+
+// Re-export Trail types for easier access
+pub use trail::{Trail, Catalysis, Carrier};
 
 #[derive(Debug, Clone)]
 pub enum DML {

@@ -1,12 +1,13 @@
 use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::emitter::{Emitter, Literal, Specie, Tag};
+use super::trail::Trail;
 
 #[derive(Debug, Clone)]
 pub struct Oop {
     pub raw: String,
     pub emitter: Emitter,
-    pub trails: Vec<String>,
+    pub trails: Vec<Trail>,
 }
 
 impl Oop {
@@ -50,7 +51,7 @@ impl Oop {
         // Parse trails (catalysis | carrier)*
         let mut trails = Vec::new();
         for trail_pair in inner {
-            trails.push(trail_pair.as_str().to_string());
+            trails.push(Trail::from_pair(trail_pair));
         }
 
         Oop { raw, emitter, trails }
@@ -73,7 +74,7 @@ impl Oop {
         &self.emitter
     }
 
-    pub fn get_trails(&self) -> &[String] {
+    pub fn get_trails(&self) -> &[Trail] {
         &self.trails
     }
 
@@ -96,6 +97,27 @@ impl Oop {
     pub fn get_emitter_literal(&self) -> Option<&Literal> {
         self.emitter.as_literal()
     }
+
+    // Trail-specific helper methods
+    pub fn get_catalysis_trails(&self) -> Vec<&super::trail::Catalysis> {
+        self.trails.iter()
+            .filter_map(|trail| trail.as_catalysis())
+            .collect()
+    }
+
+    pub fn get_carrier_trails(&self) -> Vec<&super::trail::Carrier> {
+        self.trails.iter()
+            .filter_map(|trail| trail.as_carrier())
+            .collect()
+    }
+
+    pub fn has_catalysis(&self) -> bool {
+        self.trails.iter().any(|trail| trail.is_catalysis())
+    }
+
+    pub fn has_carrier(&self) -> bool {
+        self.trails.iter().any(|trail| trail.is_carrier())
+    }
 }
 
 #[cfg(test)]
@@ -113,7 +135,8 @@ mod tests {
         assert_eq!(oop.get_emitter(), "bug");
         assert!(oop.emitter_is_tag());
         assert_eq!(oop.trails.len(), 1);
-        assert_eq!(oop.trails[0], ".happens");
+        assert_eq!(oop.trails[0].get_raw(), ".happens");
+        assert!(oop.trails[0].is_catalysis());
     }
 
     #[test]
@@ -134,7 +157,8 @@ mod tests {
         assert_eq!(oop.get_emitter(), "Class");
         assert!(oop.has_trails());
         assert_eq!(oop.get_trails().len(), 1);
-        assert_eq!(oop.get_trails()[0], ".method");
+        assert_eq!(oop.get_trails()[0].get_raw(), ".method");
+        assert!(oop.get_trails()[0].is_catalysis());
     }
 
     #[test]
@@ -246,5 +270,43 @@ mod tests {
                 _ => panic!("Unexpected test case type: {}", expected_type),
             }
         }
+    }
+
+    #[test]
+    fn test_trail_helper_methods() {
+        let input = "Object.method().call".to_string();
+        let oop = Oop::from_string(input).unwrap();
+
+        assert_eq!(oop.get_emitter(), "Object");
+        assert_eq!(oop.trails.len(), 2);
+
+        // Test catalysis methods
+        assert!(oop.has_catalysis());
+        let catalysis_trails = oop.get_catalysis_trails();
+        assert_eq!(catalysis_trails.len(), 2);
+        assert_eq!(catalysis_trails[0].get_raw(), ".method()");
+        assert_eq!(catalysis_trails[1].get_raw(), ".call");
+
+        // Test carrier methods - this input doesn't have standalone carriers
+        assert!(!oop.has_carrier());
+        let carrier_trails = oop.get_carrier_trails();
+        assert_eq!(carrier_trails.len(), 0);
+    }
+
+    #[test]
+    fn test_mixed_trails() {
+        let input = "Object.method(arg1, arg2)".to_string();
+        let oop = Oop::from_string(input).unwrap();
+
+        assert_eq!(oop.get_emitter(), "Object");
+        assert_eq!(oop.trails.len(), 1);
+
+        // Should have catalysis (which includes the carrier)
+        assert!(oop.has_catalysis());
+        assert!(!oop.has_carrier()); // No standalone carrier
+
+        let catalysis_trails = oop.get_catalysis_trails();
+        assert_eq!(catalysis_trails.len(), 1);
+        assert_eq!(catalysis_trails[0].get_raw(), ".method(arg1, arg2)");
     }
 }

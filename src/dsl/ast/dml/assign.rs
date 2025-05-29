@@ -70,7 +70,7 @@ mod tests {
         assert_eq!(assign.get_tag(), "variable");
         assert_eq!(assign.get_oop().get_emitter(), "Method");
         assert_eq!(assign.get_oop().get_trails().len(), 1);
-        assert_eq!(assign.get_oop().get_trails()[0], ".call");
+        assert_eq!(assign.get_oop().get_trails()[0].get_raw(), ".call");
     }
 
     #[test]
@@ -80,8 +80,8 @@ mod tests {
         assert_eq!(assign.get_tag(), "variable");
         assert_eq!(assign.get_oop().get_emitter(), "Method");
         assert_eq!(assign.get_oop().get_trails().len(), 2);
-        assert_eq!(assign.get_oop().get_trails()[0], ".call");
-        assert_eq!(assign.get_oop().get_trails()[1], ".another_call");
+        assert_eq!(assign.get_oop().get_trails()[0].get_raw(), ".call");
+        assert_eq!(assign.get_oop().get_trails()[1].get_raw(), ".another_call");
     }
 
     #[test]
