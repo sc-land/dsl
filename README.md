@@ -71,7 +71,16 @@ package ast {
         DML
     }
 
-    class DML {
+    enum DML {
+        Assign
+        Oop
+    }
+
+    class Assign {
+        +raw Str
+    }
+
+    class Oop {
         +raw Str
 
     }
@@ -103,6 +112,9 @@ ast.Pog --> ast.Genome
 
 ast.Genome --> ast.DDL
 ast.Genome --> ast.DML
+
+ast.DML --> ast.Assign
+ast.DML --> ast.Oop
 
 ast.DDL --> ast.Bug
 

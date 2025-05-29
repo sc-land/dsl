@@ -49,7 +49,12 @@ mod tests {
         let parsed = SCP::parse(Rule::genome, &input).unwrap();
         let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
         if let Genome::DML(dml) = genome {
-            assert_eq!(dml.raw, "bug = Bug.happens");
+            match dml {
+                crate::dsl::ast::dml::DML::Assign(assign) => {
+                    assert_eq!(assign.raw, "bug = Bug.happens");
+                }
+                _ => panic!("Expected Assign variant"),
+            }
         } else {
             panic!("Expected DML variant");
         }
@@ -61,7 +66,12 @@ mod tests {
         let parsed = SCP::parse(Rule::genome, &input).unwrap();
         let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
         if let Genome::DML(dml) = genome {
-            assert_eq!(dml.raw, "bug.fly");
+            match dml {
+                crate::dsl::ast::dml::DML::Oop(oop) => {
+                    assert_eq!(oop.raw, "bug.fly");
+                }
+                _ => panic!("Expected Oop variant"),
+            }
         } else {
             panic!("Expected DML variant");
         }
