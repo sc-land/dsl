@@ -1,0 +1,1 @@
+sc  = { SOI ~ ASCII_ALPHA_LOWER ~ EOI }
