@@ -47,10 +47,34 @@ package ast {
 
     class Catalysis {
         +raw Str
+        +tag Tag
+        +carrier Carrier?
     }
 
     class Carrier {
         +raw Str
+        +transport Transport?
+    }
+
+    enum Transport {
+        Binds
+        Sequence
+    }
+
+    class Binds {
+        +raw Str
+        +binds Bind[]
+    }
+
+    class Bind {
+        +raw Str
+        +tag Tag
+        +oop Oop
+    }
+
+    class Sequence {
+        +raw Str
+        +oops Oop[]
     }
 
     enum DDL {
@@ -59,6 +83,13 @@ package ast {
 
     class Bug {
         +raw Str
+        +specie Specie
+        +genes Gene[]
+    }
+
+    class Gene {
+        +raw Str
+        +tag Tag
         +specie Specie
     }
 
@@ -115,11 +146,30 @@ ast.Emitter --> ast.Tag
 ast.Emitter --> ast.Specie
 
 ast.Bug --> ast.Specie
+ast.Bug --> ast.Gene : 0..*
+
+ast.Gene --> ast.Tag
+ast.Gene --> ast.Specie
 
 ast.Oop --> ast.Emitter
-ast.Oop --> ast.Trail : 1..*
+ast.Oop --> ast.Trail : 0..*
 
 ast.Trail --> ast.Carrier
 ast.Trail --> ast.Catalysis
+
+ast.Carrier --> ast.Transport : 0..1
+
+ast.Transport --> ast.Binds
+ast.Transport --> ast.Sequence
+
+ast.Binds --> ast.Bind
+
+ast.Bind --> ast.Tag
+ast.Bind --> ast.Oop
+
+ast.Sequence --> ast.Oop : 1..N
+
+ast.Catalysis --> ast.Tag
+ast.Catalysis --> ast.Carrier : 0..1
 
 @enduml
