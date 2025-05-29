@@ -28,6 +28,10 @@ impl Tree {
             Err(e) => Err(TreeParseError::from(e)),
         }
     }
+
+    pub fn get_sc(&self) -> &SC {
+        &self.sc
+    }
 }
 
 
