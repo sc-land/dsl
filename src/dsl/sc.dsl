@@ -16,7 +16,8 @@ emitter  = { specie | tag | literal }
 trail    = { catalysis | carrier }
 
 catalysis = { "." ~ tag ~ carrier? }
-carrier   = { "(" ~ s ~ (binds | sequence)? ~ s ~ ")" }
+carrier   = { "(" ~ transport? ~  ")" }
+transport = { binds | sequence }
 
 binds    = { bind ~ (s ~ "," ~ s ~ bind)* }
 sequence = { oop ~ (s ~ "," ~ s ~ oop)* }

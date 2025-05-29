@@ -1,7 +1,8 @@
 use pest::iterators::Pair;
+use crate::dsl::ast::dml::binds::Binds;
+use crate::dsl::ast::dml::sequence::Sequence;
 use crate::dsl::parser::parser::Rule;
-use super::binds::Binds;
-use super::sequence::Sequence;
+
 
 #[derive(Debug, Clone)]
 pub enum Transport {

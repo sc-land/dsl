@@ -37,7 +37,20 @@ package ast {
     class Oop {
         +raw Str
         +emitter Emitter
-        +trails Str[]
+        +trails Trail[]
+    }
+
+    enum Trail {
+        Carrier
+        Catalysis
+    }
+
+    class Catalysis {
+        +raw Str
+    }
+
+    class Carrier {
+        +raw Str
     }
 
     class DDL {
@@ -96,12 +109,17 @@ ast.DDL --> ast.Bug
 
 ast.Assign --> ast.Oop
 ast.Assign --> ast.Tag
-ast.Oop --> ast.Emitter
 
 ast.Emitter --> ast.Literal
 ast.Emitter --> ast.Tag
 ast.Emitter --> ast.Specie
 
 ast.Bug --> ast.Specie
+
+ast.Oop --> ast.Emitter
+ast.Oop --> ast.Trail : 1..*
+
+ast.Trail --> ast.Carrier
+ast.Trail --> ast.Catalysis
 
 @enduml
