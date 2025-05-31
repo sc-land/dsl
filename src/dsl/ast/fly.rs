@@ -1,12 +1,12 @@
 use pest::iterators::Pair;
 use pest::Parser;
-use crate::dsl::ast::pog::Pog;
+use crate::dsl::ast::strand::Strand;
 use crate::dsl::parser::parser::Rule;
 
 #[derive(Debug, Clone)]
 pub struct Fly {
     pub raw: String,
-    pub pogs: Vec<Pog>,
+    pub strands: Vec<Strand>,
 }
 
 impl Fly {
@@ -14,18 +14,18 @@ impl Fly {
         assert_eq!(pair.as_rule(), Rule::fly);
         let raw = pair.as_str().to_string();
 
-        let mut pog = Vec::new();
+        let mut strands = Vec::new();
 
-        for pog_pair in pair.into_inner() {
-            match pog_pair.as_rule() {
-                Rule::pog => {
-                    let pog_instance = Pog::from_pair(pog_pair);
-                    pog.push(pog_instance);
+        for strand_pair in pair.into_inner() {
+            match strand_pair.as_rule() {
+                Rule::strand => {
+                    let strand_instance = Strand::from_pair(strand_pair);
+                    strands.push(strand_instance);
                 },
-                _ => unreachable!("Unexpected rule in Fly::from_pest"),
+                _ => unreachable!("Unexpected rule in Fly::from_pair"),
             }
         }
-        Fly { raw, pogs: pog }
+        Fly { raw, strands }
     }
 
     pub fn from_string(input: String) -> Self {
@@ -44,22 +44,23 @@ mod tests {
 
     #[test]
     fn test_fly_from_pair() {
-        let input = "fly".to_string();
+        let input = "bug Cat".to_string();
         let parsed = SCP::parse(Rule::fly, &input).unwrap();
         let fly = Fly::from_pair(parsed.into_iter().next().unwrap());
-        assert_eq!(fly.pogs.len(), 1);
-        assert_eq!(fly.raw, "fly");
-        assert_eq!(fly.pogs[0].raw, "fly");
+        assert_eq!(fly.strands.len(), 1);
+        assert_eq!(fly.raw, "bug Cat");
+        assert_eq!(fly.strands[0].raw, "bug Cat");
     }
 
     #[test]
     fn test_fly_from_string() {
-        let input = "fly\nbug".to_string();
+        let input = "bug Cat\nbug Dog".to_string();
         let fly = Fly::from_string(input);
-        assert_eq!(fly.pogs.len(), 2);
-        assert_eq!(fly.raw, "fly\nbug");
-        assert_eq!(fly.pogs[0].raw, "fly");
-        assert_eq!(fly.pogs[1].raw, "bug");
+        // Com a nova gramática, temos 1 strand contendo 2 genomes
+        assert_eq!(fly.strands.len(), 1);
+        assert_eq!(fly.raw, "bug Cat\nbug Dog");
+        assert_eq!(fly.strands[0].raw, "bug Cat\nbug Dog");
+        assert_eq!(fly.strands[0].genome.len(), 2);
     }
 
     #[test]

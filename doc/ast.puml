@@ -10,20 +10,20 @@ package ast {
 
     class Fly {
         +raw Str
-        +pogs Pog[]
+        +strands Strand[]
     }
 
-    class Pog {
+    class Strand {
         +raw Str
         +genome Genome[]
     }
 
     enum Genome {
-        DDL
-        DML
+        Anatomy
+        Behavior
     }
 
-    enum DML {
+    enum Behavior {
         Assign
         Oop
     }
@@ -77,7 +77,7 @@ package ast {
         +oops Oop[]
     }
 
-    enum DDL {
+    enum Anatomy {
         Bug
     }
 
@@ -126,17 +126,17 @@ parser.Tree --> parser.Parser
 
 ast.SC --> ast.Fly
 
-ast.Fly --> ast.Pog
+ast.Fly --> ast.Strand
 
-ast.Pog --> ast.Genome
+ast.Strand --> ast.Genome
 
-ast.Genome --> ast.DDL
-ast.Genome --> ast.DML
+ast.Genome --> ast.Anatomy
+ast.Genome --> ast.Behavior
 
-ast.DML --> ast.Assign
-ast.DML --> ast.Oop
+ast.Behavior --> ast.Assign
+ast.Behavior --> ast.Oop
 
-ast.DDL --> ast.Bug
+ast.Anatomy --> ast.Bug
 
 ast.Assign --> ast.Oop
 ast.Assign --> ast.Tag

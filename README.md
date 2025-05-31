@@ -5,8 +5,8 @@ Uma Domain-Specific Language (DSL) implementada em Rust usando Pest para parsing
 ## 📖 Visão Geral
 
 Este projeto implementa um DSL com suporte a:
-- **DDL (Data Definition Language)**: Definição de estruturas (`bug`)
-- **DML (Data Manipulation Language)**: Operações e atribuições
+- **Anatomy**: Definição de estruturas (`bug`)
+- **Behavior**: Operações e atribuições
 - **Literais**: Suporte a inteiros, hexadecimais, binários, decimais e strings
 - **Operações**: Chamadas de métodos e atribuições
 
@@ -27,13 +27,13 @@ cargo test
 
 ## 📝 Sintaxe Básica
 
-### Definições (DDL)
+### Definições (Anatomy)
 ```
 bug Cat
 bug Dog
 ```
 
-### Atribuições (DML)
+### Operações (Behavior)
 ```
 variable = Value.method
 result = Class.call(param: value)
@@ -66,13 +66,13 @@ method(param: value)
 
 O DSL é organizado hierarquicamente:
 ```
-SC → Fly → Pog → Genome → {DDL | DML}
+SC → Fly → Strand → Genome → {Anatomy | Behavior}
 ```
 
 - **SC**: Nó raiz da sintaxe
 - **Fly**: Contêiner de blocos de código
-- **Pog**: Agrupamento de genomas
-- **Genome**: Unidade básica (DDL ou DML)
+- **Strand**: Agrupamento de genomas
+- **Genome**: Unidade básica (Anatomy ou Behavior)
 
 ## 🧪 Exemplos de Uso
 

@@ -1,10 +1,10 @@
 sc     = { SOI ~ fly ~ EOI }
-fly    = { (pog ~ nl)+ }
-pog    = { genome+ }
-genome = { ddl | dml }
+fly    = { (strand ~ nl)+ }
+strand = { genome+ }
+genome = { anatomy | behavior }
 
-ddl = { bug }
-dml = { assign | oop }
+anatomy = { bug }
+behavior = { assign | oop }
 
 bug  = { "bug" ~ s ~ specie ~ nl ~ gene* }
 gene = { s ~ "gene" ~ s ~ tag ~ s ~ specie ~ NEWLINE* }
