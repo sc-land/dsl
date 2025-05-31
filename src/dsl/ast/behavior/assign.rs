@@ -1,6 +1,6 @@
 use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
-use crate::dsl::ast::dml::oop::Oop;
+use crate::dsl::ast::behavior::oop::Oop;
 
 #[derive(Debug, Clone)]
 pub struct Assign {
