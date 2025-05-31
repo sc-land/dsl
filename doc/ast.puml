@@ -1,6 +1,5 @@
 @startuml
 !theme crt-amber
-
 hide circle
 
 package ast {
@@ -24,19 +23,96 @@ package ast {
         DML
     }
 
-    class DML {
-        +raw Str
-
+    enum DML {
+        Assign
+        Oop
     }
 
-    class DDL {
+    class Assign {
         +raw Str
-        +bug Bug
+        +tag Tag
+        +oop Oop
+    }
+
+    class Oop {
+        +raw Str
+        +emitter Emitter
+        +trails Trail[]
+    }
+
+    enum Trail {
+        Carrier
+        Catalysis
+    }
+
+    class Catalysis {
+        +raw Str
+        +tag Tag
+        +carrier Carrier?
+    }
+
+    class Carrier {
+        +raw Str
+        +transport Transport?
+    }
+
+    enum Transport {
+        Binds
+        Sequence
+    }
+
+    class Binds {
+        +raw Str
+        +binds Bind[]
+    }
+
+    class Bind {
+        +raw Str
+        +tag Tag
+        +oop Oop
+    }
+
+    class Sequence {
+        +raw Str
+        +oops Oop[]
+    }
+
+    enum DDL {
+        Bug
     }
 
     class Bug {
         +raw Str
-        +specie Str
+        +specie Specie
+        +genes Gene[]
+    }
+
+    class Gene {
+        +raw Str
+        +tag Tag
+        +specie Specie
+    }
+
+    enum Emitter {
+        Specie
+        Tag
+        Literal
+    }
+
+    enum Literal {
+        Bit
+        Hex
+        Int
+        Str
+        Decimal
+    }
+
+    class Specie {
+        +raw Str
+    }
+
+    class Tag {
+        +raw Str
     }
 }
 
@@ -57,6 +133,43 @@ ast.Pog --> ast.Genome
 ast.Genome --> ast.DDL
 ast.Genome --> ast.DML
 
+ast.DML --> ast.Assign
+ast.DML --> ast.Oop
+
 ast.DDL --> ast.Bug
+
+ast.Assign --> ast.Oop
+ast.Assign --> ast.Tag
+
+ast.Emitter --> ast.Literal
+ast.Emitter --> ast.Tag
+ast.Emitter --> ast.Specie
+
+ast.Bug --> ast.Specie
+ast.Bug --> ast.Gene : 0..*
+
+ast.Gene --> ast.Tag
+ast.Gene --> ast.Specie
+
+ast.Oop --> ast.Emitter
+ast.Oop --> ast.Trail : 0..*
+
+ast.Trail --> ast.Carrier
+ast.Trail --> ast.Catalysis
+
+ast.Carrier --> ast.Transport : 0..1
+
+ast.Transport --> ast.Binds
+ast.Transport --> ast.Sequence
+
+ast.Binds --> ast.Bind
+
+ast.Bind --> ast.Tag
+ast.Bind --> ast.Oop
+
+ast.Sequence --> ast.Oop : 1..N
+
+ast.Catalysis --> ast.Tag
+ast.Catalysis --> ast.Carrier : 0..1
 
 @enduml

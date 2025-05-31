@@ -3,6 +3,8 @@ pub mod fly;
 pub mod pog;
 pub mod genome;
 mod ddl;
-mod dml;
+pub mod dml;
 mod bug;
+pub mod gene;
+pub mod emitter;
 

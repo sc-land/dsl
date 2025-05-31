@@ -22,5 +22,18 @@ fn test_parse_sc() {
     println!("{:#?}", tree);
     // assert_eq!(tree.sc.fly.pog[0].genome[0].raw, "f", "Primeiro bios deve ser 'f'");
     // assert_eq!(tree.sc.fly.pog[0].genome[1].raw, "l", "Primeiro bios deve ser 'f'");
-    
+
+}
+
+#[test]
+fn test_get_sc() {
+    let input = "fly";
+    let tree = Tree::parse_input(input.to_string()).unwrap();
+
+    // Testa se conseguimos acessar o SC através do método get_sc()
+    let sc = tree.get_sc();
+    assert!(!sc.fly.raw.is_empty(), "SC deve ter um fly válido com conteúdo");
+
+    // Testa se o acesso direto e via método retornam a mesma referência
+    assert_eq!(std::ptr::eq(&tree.sc, tree.get_sc()), true, "get_sc() deve retornar referência para o mesmo objeto");
 }

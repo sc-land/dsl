@@ -16,7 +16,7 @@ impl Genome {
         let inner_pair = pair.into_inner().next().unwrap();
         match inner_pair.as_rule() {
             Rule::ddl => Genome::DDL(DDL::from_pair(inner_pair)),
-            Rule::dml => Genome::DML(DML::new(inner_pair.as_str().to_string())),
+            Rule::dml => Genome::DML(DML::from_pair(inner_pair)),
             _ => panic!("Regra inesperada dentro de genome: {:?}", inner_pair.as_rule()),
         }
     }
@@ -37,7 +37,7 @@ mod tests {
         let parsed = SCP::parse(Rule::genome, &input).unwrap();
         let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
         if let Genome::DDL(ddl) = genome {
-            assert_eq!(ddl.bug.raw, "bug People");
+            assert_eq!(ddl.get_bug().raw, "bug People");
         } else {
             panic!("Expected DDL variant");
         }
@@ -49,7 +49,29 @@ mod tests {
         let parsed = SCP::parse(Rule::genome, &input).unwrap();
         let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
         if let Genome::DML(dml) = genome {
-            assert_eq!(dml.raw, "bug = Bug.happens");
+            match dml {
+                DML::Assign(assign) => {
+                    assert_eq!(assign.raw, "bug = Bug.happens");
+                }
+                _ => panic!("Expected Assign variant"),
+            }
+        } else {
+            panic!("Expected DML variant");
+        }
+    }
+
+    #[test]
+    fn test_genome_from_pair_dml_simple() {
+        let input = "bug.fly".to_string();
+        let parsed = SCP::parse(Rule::genome, &input).unwrap();
+        let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
+        if let Genome::DML(dml) = genome {
+            match dml {
+                DML::Oop(oop) => {
+                    assert_eq!(oop.raw, "bug.fly");
+                }
+                _ => panic!("Expected Oop variant"),
+            }
         } else {
             panic!("Expected DML variant");
         }
