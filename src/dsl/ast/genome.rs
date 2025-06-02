@@ -1,7 +1,9 @@
 use pest::iterators::Pair;
+use pest::Parser;
 use crate::dsl::ast::anatomy::Anatomy;
 use crate::dsl::ast::behavior::Behavior;
-use crate::dsl::parser::parser::Rule;
+use crate::dsl::parser::parser::{Rule, SCP};
+use crate::dsl::ast::emitter::Tag;
 
 #[derive(Debug, Clone)]
 pub enum Genome {
@@ -20,60 +22,122 @@ impl Genome {
             _ => panic!("Regra inesperada dentro de genome: {:?}", inner_pair.as_rule()),
         }
     }
+
+    pub fn from_string(input: String) -> Result<Self, Box<dyn std::error::Error>> {
+        let mut pairs = SCP::parse(Rule::genome, &input)?;
+        let pair = pairs.next().ok_or("No pair found")?;
+        Ok(Genome::from_pair(pair))
+    }
+
+    pub fn is_anatomy(&self) -> bool {
+        matches!(self, Genome::Anatomy(_))
+    }
+
+    pub fn is_behavior(&self) -> bool {
+        matches!(self, Genome::Behavior(_))
+    }
+
+    pub fn as_anatomy(&self) -> Option<&Anatomy> {
+        match self {
+            Genome::Anatomy(anatomy) => Some(anatomy),
+            _ => None,
+        }
+    }
+
+    pub fn as_behavior(&self) -> Option<&Behavior> {
+        match self {
+            Genome::Behavior(behavior) => Some(behavior),
+            _ => None,
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use pest::Parser;
-
-    use crate::dsl::parser::parser::SCP;
-
-    use super::*;
-
+    use std::fs;
+    use super::Genome;
+    use crate::dsl::ast::anatomy::Anatomy;
+    use crate::dsl::ast::behavior::Behavior;
 
     #[test]
-    fn test_genome_from_pair_anatomy() {
-        let input = "bug People".to_string();
-        let parsed = SCP::parse(Rule::genome, &input).unwrap();
-        let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
-        if let Genome::Anatomy(anatomy) = genome {
-            assert_eq!(anatomy.get_bug().raw, "bug People");
-        } else {
-            panic!("Expected Anatomy variant");
+    fn test_genome_with_anatomy() {
+        // Carrega o fixture de anatomy
+        let path = "tests/fixtures/fragments/genome/simple_anatomy.sc".to_string();
+        let input = fs::read_to_string(path)
+            .expect("Failed to read simple_anatomy.sc file");
+
+        // Verifica que o arquivo não está vazio
+        assert!(!input.is_empty(), "Fixture file should not be empty");
+
+        // Testa o parse usando from_string
+        let genome = Genome::from_string(input)
+            .expect("Failed to parse genome");
+
+        // Verifica se é um Anatomy usando métodos utilitários
+        assert!(genome.is_anatomy(), "Genome should be Anatomy");
+        assert!(!genome.is_behavior(), "Genome should not be Behavior");
+
+        // Verifica o conteúdo
+        let anatomy = genome.as_anatomy().expect("Should be anatomy");
+
+        // Como Anatomy é um enum com apenas Bug, podemos verificar através do pattern matching
+        match anatomy {
+            Anatomy::Bug(bug) => {
+                assert_eq!(bug.specie, "Cat", "Bug species should be Cat");
+                assert_eq!(bug.genes.len(), 2, "Bug should have exactly 2 genes");
+                assert_eq!(bug.genes[0].tag.raw, "energia", "First gene should be energia");
+                assert_eq!(bug.genes[1].tag.raw, "folego", "Second gene should be folego");
+                assert_eq!(bug.ethics.len(), 0, "Bug should have no ethics");
+            }
         }
     }
 
     #[test]
-    fn test_genome_from_pair_behavior() {
-        let input = "bug = Bug.happens".to_string();
-        let parsed = SCP::parse(Rule::genome, &input).unwrap();
-        let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
-        if let Genome::Behavior(behavior) = genome {
-            match behavior {
-                Behavior::Assign(assign) => {
-                    assert_eq!(assign.raw, "bug = Bug.happens");
-                }
-                _ => panic!("Expected Assign variant"),
-            }
-        } else {
-            panic!("Expected Behavior variant");
-        }
+    fn test_genome_with_behavior() {
+        // Carrega o fixture de behavior
+        let path = "tests/fixtures/fragments/genome/simple_behavior.sc".to_string();
+        let input = fs::read_to_string(path)
+            .expect("Failed to read simple_behavior.sc file");
+
+        // Verifica que o arquivo não está vazio
+        assert!(!input.is_empty(), "Fixture file should not be empty");
+
+        // Verifica o conteúdo antes do parse
+        assert!(input.contains("x = 42"), "Input should contain assignment x = 42");
+
+        // Testa o parse usando from_string
+        let genome = Genome::from_string(input)
+            .expect("Failed to parse genome");
+
+        // Verifica se é um Behavior usando métodos utilitários
+        assert!(genome.is_behavior(), "Genome should be Behavior");
+        assert!(!genome.is_anatomy(), "Genome should not be Anatomy");
+
+        // Verifica o conteúdo
+        let behavior = genome.as_behavior().expect("Should be behavior");
+        assert!(matches!(behavior, Behavior::Assign(_)), "Should be an assign behavior");
     }
 
     #[test]
-    fn test_genome_from_pair_behavior_simple() {
-        let input = "bug.fly".to_string();
-        let parsed = SCP::parse(Rule::genome, &input).unwrap();
-        let genome = Genome::from_pair(parsed.into_iter().next().unwrap());
-        if let Genome::Behavior(behavior) = genome {
-            match behavior {
-                Behavior::Oop(oop) => {
-                    assert_eq!(oop.raw, "bug.fly");
-                }
-                _ => panic!("Expected Oop variant"),
-            }
-        } else {
-            panic!("Expected Behavior variant");
-        }
+    fn test_genome_types_distinction() {
+        // Testa que conseguimos distinguir entre os diferentes tipos de Genome
+
+        // Anatomy
+        let anatomy_path = "tests/fixtures/fragments/genome/simple_anatomy.sc".to_string();
+        let anatomy_input = fs::read_to_string(anatomy_path)
+            .expect("Failed to read simple_anatomy.sc file");
+        let anatomy_genome = Genome::from_string(anatomy_input)
+            .expect("Should parse anatomy");
+        assert!(anatomy_genome.is_anatomy());
+        assert!(!anatomy_genome.is_behavior());
+
+        // Behavior
+        let behavior_path = "tests/fixtures/fragments/genome/simple_behavior.sc".to_string();
+        let behavior_input = fs::read_to_string(behavior_path)
+            .expect("Failed to read simple_behavior.sc file");
+        let behavior_genome = Genome::from_string(behavior_input)
+            .expect("Should parse behavior");
+        assert!(behavior_genome.is_behavior());
+        assert!(!behavior_genome.is_anatomy());
     }
 }

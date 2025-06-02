@@ -7,4 +7,10 @@ pub mod behavior;
 mod bug;
 pub mod gene;
 pub mod emitter;
+pub mod ethics;
+mod statement;
+mod matrix;
+pub mod signal;
+mod nucleus;
+mod condition;
 

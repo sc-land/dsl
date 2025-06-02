@@ -5,14 +5,12 @@ use crate::dsl::parser::parser::{Rule, SCP};
 
 #[derive(Debug, Clone)]
 pub struct Strand {
-    pub raw: String,
     pub genome: Vec<Genome>,
 }
 
 impl Strand {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
         assert_eq!(pair.as_rule(), Rule::strand);
-        let raw = pair.as_str().to_string();
 
         let mut genome = Vec::new();
         for genome_pair in pair.into_inner() {
@@ -24,7 +22,7 @@ impl Strand {
                 _ => unreachable!("Unexpected rule in Strand::from_pair"),
             }
         }
-        Strand { raw, genome }
+        Strand { genome }
     }
 
     pub fn from_string(input: String) -> Self {
@@ -34,30 +32,25 @@ impl Strand {
             .expect("No pair found");
         Strand::from_pair(pair)
     }
-
 }
 
 #[cfg(test)]
 mod tests {
-    use pest::Parser;
-    use crate::dsl::parser::parser::SCP;
-    use super::*;
-
-
-    #[test]
-    fn test_strand_from_pair() {
-        let input = "bug People".to_string();
-        let parsed = SCP::parse(Rule::strand, &input).unwrap();
-        let strand = Strand::from_pair(parsed.into_iter().next().unwrap());
-        assert_eq!(strand.raw, "bug People");
-        assert_eq!(strand.genome.len(), 1);
-    }
+    use std::fs;
+    use crate::dsl::ast::strand::Strand;
 
     #[test]
     fn test_strand_from_string() {
-        let input = "bug ATCG".to_string();
-        let strand = Strand::from_string(input);
-        assert_eq!(strand.raw, "bug ATCG");
-        assert_eq!(strand.genome.len(), 1);
+        // Carrega o arquivo de fixture usando o helper
+        let path = "tests/fixtures/fragments/bug/two_bugs.sc".to_string();
+        let input = fs::read_to_string(path)
+            .expect("Failed to read input.sc file");
+
+        assert!(!input.is_empty(), "Fixture file should not be empty");
+
+        let strand = Strand::from_string(input.clone());
+
+        // Verifica se o strand contém dois genomes
+        assert_eq!(strand.genome.len(), 2, "Strand should contain two genomes");
     }
 }

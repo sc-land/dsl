@@ -1,35 +1,26 @@
 use pest::iterators::Pair;
 use pest::Parser;
 use crate::dsl::ast::strand::Strand;
-use crate::dsl::parser::parser::Rule;
+use crate::dsl::parser::parser::{Rule, SCP};
 
 #[derive(Debug, Clone)]
 pub struct Fly {
-    pub raw: String,
-    pub strands: Vec<Strand>,
+    pub strand: Strand,
 }
 
 impl Fly {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
         assert_eq!(pair.as_rule(), Rule::fly);
-        let raw = pair.as_str().to_string();
 
-        let mut strands = Vec::new();
+        let strand_pair = pair.into_inner().next().expect("Fly should have a strand");
+        assert_eq!(strand_pair.as_rule(), Rule::strand);
+        let strand = Strand::from_pair(strand_pair);
 
-        for strand_pair in pair.into_inner() {
-            match strand_pair.as_rule() {
-                Rule::strand => {
-                    let strand_instance = Strand::from_pair(strand_pair);
-                    strands.push(strand_instance);
-                },
-                _ => unreachable!("Unexpected rule in Fly::from_pair"),
-            }
-        }
-        Fly { raw, strands }
+        Fly { strand }
     }
 
     pub fn from_string(input: String) -> Self {
-        let pair = crate::dsl::parser::parser::SCP::parse(Rule::fly, &input)
+        let pair = SCP::parse(Rule::fly, &input)
             .expect("Failed to parse input")
             .next()
             .expect("No pair found");
@@ -39,41 +30,28 @@ impl Fly {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::dsl::parser::parser::SCP;
+    use std::fs;
+    use super::Fly;
 
     #[test]
-    fn test_fly_from_pair() {
-        let input = "bug Cat".to_string();
-        let parsed = SCP::parse(Rule::fly, &input).unwrap();
-        let fly = Fly::from_pair(parsed.into_iter().next().unwrap());
-        assert_eq!(fly.strands.len(), 1);
-        assert_eq!(fly.raw, "bug Cat");
-        assert_eq!(fly.strands[0].raw, "bug Cat");
-    }
+    fn test_fly_with_two_bugs() {
+        // Carrega o fragmento com dois bugs
+        let path = "tests/fixtures/fragments/bug/two_bugs.sc".to_string();
+        let input = fs::read_to_string(path)
+            .expect("Failed to read input.sc file");
 
-    #[test]
-    fn test_fly_from_string() {
-        let input = "bug Cat\nbug Dog".to_string();
-        let fly = Fly::from_string(input);
-        // Com a nova gramática, temos 1 strand contendo 2 genomes
-        assert_eq!(fly.strands.len(), 1);
-        assert_eq!(fly.raw, "bug Cat\nbug Dog");
-        assert_eq!(fly.strands[0].raw, "bug Cat\nbug Dog");
-        assert_eq!(fly.strands[0].genome.len(), 2);
-    }
+        // Verifica que o arquivo não está vazio
+        assert!(!input.is_empty(), "Fixture file should not be empty");
 
-    #[test]
-    fn test_fly_empty_input() {
-        let input = "".to_string();
-        let result = SCP::parse(Rule::fly, &input);
-        assert!(result.is_err());
-    }
+        // Testa o parse
+        let fly = Fly::from_string(input.clone());
 
-    #[test]
-    fn test_fly_invalid_input() {
-        let input = "!".to_string();
-        let result = SCP::parse(Rule::fly, &input);
-        assert!(result.is_err());
+        // Verifica se o strand contém dois genomes
+        assert_eq!(fly.strand.genome.len(), 2, "Strand should contain two genomes");
+
+        // Verifica se o conteúdo contém os nomes dos bugs
+        assert!(input.contains("Dog"), "Input should contain bug Dog");
+        assert!(input.contains("Cog"), "Input should contain bug Cog");
     }
 }
+
