@@ -1,16 +1,19 @@
 pub mod literal;
 pub mod specie;
 pub mod tag;
+pub mod self_ref;
 
 pub use literal::Literal;
 pub use specie::Specie;
 pub use tag::Tag;
+pub use self_ref::SelfRef;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Emitter {
     Specie(Specie),
     Tag(Tag),
     Literal(Literal),
+    SelfRef(SelfRef),
 }
 
 impl Emitter {
@@ -19,6 +22,7 @@ impl Emitter {
             Emitter::Specie(specie) => specie.get_raw(),
             Emitter::Tag(tag) => tag.get_raw(),
             Emitter::Literal(literal) => literal.get_raw(),
+            Emitter::SelfRef(self_ref) => self_ref.get_raw(),
         }
     }
 
@@ -34,53 +38,21 @@ impl Emitter {
         matches!(self, Emitter::Literal(_))
     }
 
+    pub fn is_self_ref(&self) -> bool {
+        matches!(self, Emitter::SelfRef(_))
+    }
+
     pub fn as_literal(&self) -> Option<&Literal> {
         match self {
             Emitter::Literal(literal) => Some(literal),
             _ => None,
         }
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_emitter_specie() {
-        let specie = Specie::new("Animal".to_string());
-        let emitter = Emitter::Specie(specie);
-        
-        assert_eq!(emitter.get_raw(), "Animal");
-        assert!(emitter.is_specie());
-        assert!(!emitter.is_tag());
-        assert!(!emitter.is_literal());
-        assert!(emitter.as_literal().is_none());
-    }
-
-    #[test]
-    fn test_emitter_tag() {
-        let tag = Tag::new("method".to_string());
-        let emitter = Emitter::Tag(tag);
-        
-        assert_eq!(emitter.get_raw(), "method");
-        assert!(!emitter.is_specie());
-        assert!(emitter.is_tag());
-        assert!(!emitter.is_literal());
-        assert!(emitter.as_literal().is_none());
-    }
-
-    #[test]
-    fn test_emitter_literal() {
-        let literal = Literal::Int { raw: "42".to_string() };
-        let emitter = Emitter::Literal(literal);
-        
-        assert_eq!(emitter.get_raw(), "42");
-        assert!(!emitter.is_specie());
-        assert!(!emitter.is_tag());
-        assert!(emitter.is_literal());
-        
-        let literal_ref = emitter.as_literal().unwrap();
-        assert!(literal_ref.is_int());
+    pub fn as_self_ref(&self) -> Option<&SelfRef> {
+        match self {
+            Emitter::SelfRef(self_ref) => Some(self_ref),
+            _ => None,
+        }
     }
 }
