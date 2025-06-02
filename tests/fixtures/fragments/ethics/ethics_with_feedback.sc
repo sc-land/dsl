@@ -1,0 +1,1 @@
+ethics method_with_return String

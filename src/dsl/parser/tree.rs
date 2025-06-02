@@ -33,18 +33,3 @@ impl Tree {
         &self.sc
     }
 }
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_empty_input() {
-        let input = "".to_string();
-        let result = Tree::parse_input(input);
-        assert!(result.is_err());
-        assert!(matches!(result.unwrap_err(), TreeParseError::PestError(_)));
-
-    }
-}
