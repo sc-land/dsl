@@ -130,7 +130,7 @@ package ast {
         +tag Tag
         +signature Signature?
         +feedback Specie?
-        +matrix Matrix
+        +matrix Matrix?
     }
 
     class Signature {
