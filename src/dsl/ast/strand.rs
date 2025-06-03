@@ -3,7 +3,7 @@ use pest::Parser;
 use crate::dsl::ast::genome::Genome;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Strand {
     pub genome: Vec<Genome>,
 }

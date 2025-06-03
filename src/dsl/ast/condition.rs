@@ -4,7 +4,7 @@ use crate::dsl::ast::behavior::oop::Oop;
 
 /// Condition represents a conditional expression in control flow statements
 /// Based on the grammar: condition = { oop }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Condition {
     /// A conditional expression containing an oop
     Oop(Oop)

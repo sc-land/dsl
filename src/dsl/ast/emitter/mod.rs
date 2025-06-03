@@ -8,7 +8,7 @@ pub use specie::Specie;
 pub use tag::Tag;
 pub use self_ref::SelfRef;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Emitter {
     Specie(Specie),
     Tag(Tag),

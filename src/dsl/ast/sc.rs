@@ -3,7 +3,7 @@ use crate::dsl::parser::parser::{Rule, SCP};
 use pest::Parser;
 use pest::iterators::Pair;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SC {
     pub fly: Fly,
 }
@@ -28,8 +28,15 @@ impl SC {
 
 #[cfg(test)]
 mod tests {
-    use crate::tests::load_fragment;
-    use super::*;
+    use pest::Parser;
+
+    use crate::{
+        dsl::{
+            ast::sc::SC,
+            parser::parser::{Rule, SCP},
+        },
+        tests::load_fragment,
+    };
 
     #[test]
     fn test_sc_parse_anatomy() {
@@ -81,15 +88,17 @@ mod tests {
         let sc_parse = SC::parse(input.clone());
 
         // Parse manual para comparação
-        let pair =
-            SCP::parse(Rule::sc, &input)
-                .expect("Failed to parse input")
-                .next()
-                .expect("No pair found");
+        let pair = SCP::parse(Rule::sc, &input)
+            .expect("Failed to parse input")
+            .next()
+            .expect("No pair found");
 
         let sc_from_pair = SC::from_pair(pair);
 
         // Ambos devem produzir o mesmo resultado
-        assert_eq!(sc_parse.fly.strand.genome.len(), sc_from_pair.fly.strand.genome.len());
+        assert_eq!(
+            sc_parse.fly.strand.genome.len(),
+            sc_from_pair.fly.strand.genome.len()
+        );
     }
 }

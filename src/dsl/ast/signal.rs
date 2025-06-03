@@ -2,7 +2,7 @@ use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::behavior::Behavior;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Signal {
     Behavior(Behavior),
 }

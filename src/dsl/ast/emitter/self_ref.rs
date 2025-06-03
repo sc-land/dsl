@@ -1,7 +1,7 @@
 use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SelfRef {
     pub raw: String,
 }

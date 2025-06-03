@@ -2,7 +2,7 @@ use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::emitter::{Tag, Specie};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Gene {
     pub tag: Tag,
     pub specie: Specie,

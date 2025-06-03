@@ -2,7 +2,7 @@ use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::matrix::Matrix;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Nucleus {
     pub raw: String,
     pub matrix: Matrix,

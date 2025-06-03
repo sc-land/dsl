@@ -3,7 +3,7 @@ use crate::dsl::parser::parser::{Rule, SCP};
 use crate::dsl::ast::gene::Gene;
 use super::ethics::Ethics;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Bug {
     pub specie: String,
     pub genes: Vec<Gene>,
@@ -86,7 +86,7 @@ mod tests {
 
         // Verifica ethics usando atributos diretos
         assert!(!bug.ethics.is_empty(), "Bug should have ethics");
-        assert_eq!(bug.ethics.len(), 3, "Bug should have exactly 3 ethics");
+        assert_eq!(bug.ethics.len(), 4, "Bug should have exactly 4 ethics");
     }
 
     #[test]

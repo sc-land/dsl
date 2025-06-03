@@ -3,9 +3,8 @@ use pest::Parser;
 use crate::dsl::ast::anatomy::Anatomy;
 use crate::dsl::ast::behavior::Behavior;
 use crate::dsl::parser::parser::{Rule, SCP};
-use crate::dsl::ast::emitter::Tag;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Genome {
     Anatomy(Anatomy),
     Behavior(Behavior),

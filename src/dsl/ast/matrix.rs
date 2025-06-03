@@ -2,7 +2,7 @@ use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::signal::Signal;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix {
     pub raw: String,
     pub signals: Vec<Signal>,

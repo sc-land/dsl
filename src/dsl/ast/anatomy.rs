@@ -3,7 +3,7 @@ use pest::Parser;
 use crate::dsl::ast::bug::Bug;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Anatomy {
     Bug(Bug),
 }
@@ -25,7 +25,8 @@ impl Anatomy {
 #[cfg(test)]
 mod tests {
     use std::fs;
-    use super::*;
+    use crate::dsl::ast::anatomy::Anatomy;
+
 
     #[test]
     fn test_anatomy_from_string() {
@@ -67,7 +68,7 @@ mod tests {
             Anatomy::Bug(bug) => {
                 assert_eq!(bug.specie, "TestBug", "Bug species should be TestBug");
                 assert_eq!(bug.genes.len(), 1, "Bug should have exactly 1 gene");
-                assert_eq!(bug.ethics.len(), 3, "Bug should have exactly 3 ethics");
+                assert_eq!(bug.ethics.len(), 4, "Bug should have exactly 4 ethics");
             }
         }
     }
