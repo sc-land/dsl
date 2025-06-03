@@ -4,22 +4,17 @@ use crate::dsl::ast::emitter::{Tag, Specie};
 use crate::dsl::ast::behavior::bind::EthicsBind;
 use crate::dsl::ast::matrix::Matrix;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Ethics {
     pub tag: Tag,
     pub signature: Option<Signature>,
-    pub feedback: Option<Feedback>,
+    pub feedback: Option<Specie>,
     pub body: Option<Matrix>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Signature {
     pub binds: Option<Vec<EthicsBind>>,
-}
-
-#[derive(Debug, Clone)]
-pub struct Feedback {
-    pub specie: Specie,
 }
 
 impl Ethics {
@@ -41,12 +36,12 @@ impl Ethics {
                     signature = Some(Signature::from_pair(inner_pair));
                 }
                 Rule::specie => {
-                    feedback = Some(Feedback { specie: Specie::new(inner_pair.as_str().to_string()) });
+                    feedback = Some(Specie::from_pair(inner_pair));
                 }
                 Rule::matrix => {
                     body = Some(Matrix::from_pair(inner_pair));
                 }
-                _ => {}
+                _ => { panic!("Unexpected rule in ethics: {:?}", inner_pair.as_rule()); }
             }
         }
 
@@ -93,21 +88,34 @@ impl Signature {
     }
 }
 
-impl Feedback {
-    pub fn from_pair(pair: Pair<Rule>) -> Self {
-        assert_eq!(pair.as_rule(), Rule::feedback);
-
-        let inner_pair = pair.into_inner().next().expect("Feedback must have a specie");
-        let specie = Specie::new(inner_pair.as_str().to_string());
-
-        Feedback { specie }
-    }
-}
 
 #[cfg(test)]
 mod tests {
     use std::fs;
-    use super::*;
+
+    use crate::dsl::ast::ethics::Ethics;
+
+    #[test]
+    fn test_ethics_with_body() {
+        // Carrega o arquivo de teste que contém um ethics com corpo/matriz
+        let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_with_body.sc")
+            .expect("Failed to read ethics with body fragment");
+        let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
+
+        // Verifica que os atributos básicos foram extraídos corretamente
+        assert_eq!(ethics.tag.raw, "corre", "O tag do ethics deve ser 'corre'");
+        assert!(ethics.signature.is_none(), "Ethics não deve ter assinatura");
+        assert!(ethics.feedback.is_none(), "Ethics não deve ter retorno/feedback");
+
+        // Verifica a existência e conteúdo do corpo
+        assert!(ethics.body.is_some(), "Ethics deve ter um corpo/matrix");
+
+        if let Some(body) = &ethics.body {
+            assert!(!body.signals.is_empty(), "O corpo do ethics deve conter sinais");
+            assert_eq!(body.signals.len(), 2, "O corpo deve conter exatamente 2 sinais");
+            // Podemos adicionar mais verificações específicas sobre os sinais aqui
+        }
+    }
 
     #[test]
     fn test_simple_ethics() {
@@ -131,7 +139,7 @@ mod tests {
         assert!(ethics.body.is_none());
 
         let feedback = ethics.feedback.as_ref().expect("Should have feedback");
-        assert_eq!(feedback.specie.raw, "String");
+        assert_eq!(feedback.raw, "String");
     }
 
     #[test]
@@ -191,7 +199,7 @@ mod tests {
 
         // Test feedback
         let feedback = ethics.feedback.as_ref().expect("Should have feedback");
-        assert_eq!(feedback.specie.raw, "Boolean");
+        assert_eq!(feedback.raw, "Boolean");
     }
 
     #[test]
@@ -215,7 +223,7 @@ mod tests {
         let feedback = ethics.feedback.as_ref().expect("Should have feedback");
 
         // Test feedback methods
-        assert_eq!(feedback.specie.raw, "Boolean");
+        assert_eq!(feedback.raw, "Boolean");
     }
 
     #[test]
@@ -239,5 +247,48 @@ mod tests {
         assert_eq!(ethics.signature.is_some(), cloned.signature.is_some());
         assert_eq!(ethics.feedback.is_some(), cloned.feedback.is_some());
         assert_eq!(ethics.body.is_some(), cloned.body.is_some());
+    }
+
+    #[test]
+    fn test_ethics_body_content() {
+        // Carrega o arquivo de teste que contém um ethics com corpo/matriz
+        let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_with_body.sc")
+            .expect("Failed to read ethics with body fragment");
+        let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
+
+        // Verifica a existência do corpo
+        let body = ethics.body.as_ref().expect("Ethics deve ter um corpo/matrix");
+
+        // Verifica o texto raw do corpo
+        assert!(body.raw.contains("vai = folego.div(2)"), "O corpo deve conter a primeira atribuição");
+        assert!(body.raw.contains("volta = folego.div(2)"), "O corpo deve conter a segunda atribuição");
+
+        // Verifica a estrutura dos sinais (comportamentos)
+        assert_eq!(body.signals.len(), 2, "O corpo deve ter exatamente 2 sinais");
+
+        // Podemos verificar mais detalhes dos sinais quando necessário:
+        for (i, signal) in body.signals.iter().enumerate() {
+            // Como nosso Signal enum atualmente só tem uma variante (Behavior), podemos usar um match direto
+            let behavior = match signal {
+                crate::dsl::ast::signal::Signal::Behavior(b) => b
+            };
+
+            // Verifica se o comportamento é do tipo Assign
+            match behavior {
+                crate::dsl::ast::behavior::Behavior::Assign(assign) => {
+                    // Verifica as atribuições específicas
+                    if i == 0 {
+                        assert_eq!(assign.tag.raw, "vai", "Primeira atribuição deve ser para 'vai'");
+                    } else if i == 1 {
+                        assert_eq!(assign.tag.raw, "volta", "Segunda atribuição deve ser para 'volta'");
+                    }
+
+                    // Verifica se o valor atribuído contém folego.div(2)
+                    assert!(assign.raw.contains("folego.div(2)"),
+                            "O valor atribuído deve conter 'folego.div(2)'");
+                },
+                _ => panic!("Esperava-se um comportamento do tipo Assign")
+            }
+        }
     }
 }
