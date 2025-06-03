@@ -22,7 +22,7 @@ bug         =  { "bug" ~ i ~ specie ~ i ~ (gene|ethics)* ~ i ~ "end" }
 gene        =  { "gene" ~ i ~ tag ~ i ~ specie ~ i }
 
 // Ethics (functions/methods) - suporte a todos os casos
-ethics = { ethics_head_body | ethics_head  }
+ethics = { ethics_head_body | ethics_head }
 ethics_head = _{ (ethics_d | ethics_c | ethics_b | ethics_a) ~ i }
 ethics_head_body = _{ ethics_head ~ ethics_body }
 ethics_a = _{ t_ethics ~ i ~ tag  }
@@ -32,7 +32,7 @@ ethics_d = _{ t_ethics ~ i ~ tag ~ i ~ signature ~ i ~ feedback }
 t_ethics = _{ "ethics" }
 signature = { "(" ~ i ~ ethics_binds? ~ i ~ ")" }
 feedback = _{ specie }
-ethics_body = { i ~ matrix ~ i ~ nucleus_ends ~ i }
+ethics_body = _{ i ~ matrix ~ i ~ nucleus_ends ~ i }
 
 // ========================================
 // CODE BLOCKS
@@ -40,7 +40,7 @@ ethics_body = { i ~ matrix ~ i ~ nucleus_ends ~ i }
 nucleus       =  { nucleus_start ~ i ~ matrix ~ i ~ nucleus_ends }
 nucleus_start = _{ "do" }
 nucleus_ends  = _{ "end" }
-matrix        =  { signal* }
+matrix        =  { signal+ }
 signal        =  { i ~ ( behavior ) ~ i }
 
 // ========================================
