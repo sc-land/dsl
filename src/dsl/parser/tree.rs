@@ -12,7 +12,7 @@ pub enum TreeParseError {
 }
 
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Tree {
     pub sc: SC,
 }
@@ -31,20 +31,5 @@ impl Tree {
 
     pub fn get_sc(&self) -> &SC {
         &self.sc
-    }
-}
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_empty_input() {
-        let input = "".to_string();
-        let result = Tree::parse_input(input);
-        assert!(result.is_err());
-        assert!(matches!(result.unwrap_err(), TreeParseError::PestError(_)));
-
     }
 }

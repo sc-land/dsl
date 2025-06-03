@@ -1,0 +1,1 @@
+ethics simple_method

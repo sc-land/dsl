@@ -1,20 +1,18 @@
-@startuml
+@startuml AST of DSL from SC language
+
 !theme crt-amber
 hide circle
 
 package ast {
     class SC {
-        +raw Str
         +fly Fly
     }
 
     class Fly {
-        +raw Str
-        +strands Strand[]
+        +strand Strand
     }
 
     class Strand {
-        +raw Str
         +genome Genome[]
     }
 
@@ -26,16 +24,57 @@ package ast {
     enum Behavior {
         Assign
         Oop
+        Return
+        If
+        While
+        For
     }
 
     class Assign {
-        +raw Str
         +tag Tag
         +oop Oop
     }
 
+    class Return {
+        +oop Oop
+    }
+
+    class If {
+        +condition Oop
+        +matrix Matrix
+        +elsif Elif[]
+        +else Else?
+    }
+
+    class Elif {
+        +condition Oop
+        +matrix Matrix
+    }
+
+    class Else {
+        +matrix Matrix
+    }
+
+    class While {
+        +condition Oop
+        +matrix Matrix
+    }
+
+    class For {
+        +tag Tag
+        +oop Oop
+        +matrix Matrix
+    }
+
+    class Matrix {
+        +signals Signal[]
+    }
+
+    class Signal {
+        +behavior Behavior
+    }
+
     class Oop {
-        +raw Str
         +emitter Emitter
         +trails Trail[]
     }
@@ -46,13 +85,11 @@ package ast {
     }
 
     class Catalysis {
-        +raw Str
         +tag Tag
         +carrier Carrier?
     }
 
     class Carrier {
-        +raw Str
         +transport Transport?
     }
 
@@ -62,18 +99,15 @@ package ast {
     }
 
     class Binds {
-        +raw Str
         +binds Bind[]
     }
 
     class Bind {
-        +raw Str
         +tag Tag
         +oop Oop
     }
 
     class Sequence {
-        +raw Str
         +oops Oop[]
     }
 
@@ -82,13 +116,28 @@ package ast {
     }
 
     class Bug {
-        +raw Str
         +specie Specie
         +genes Gene[]
+        +ethics Ethics[]
     }
 
     class Gene {
-        +raw Str
+        +tag Tag
+        +specie Specie
+    }
+
+    class Ethics {
+        +tag Tag
+        +signature Signature?
+        +feedback Specie?
+        +matrix Matrix?
+    }
+
+    class Signature {
+        +binds EthicsBind[]
+    }
+
+    class EthicsBind {
         +tag Tag
         +specie Specie
     }
@@ -135,11 +184,38 @@ ast.Genome --> ast.Behavior
 
 ast.Behavior --> ast.Assign
 ast.Behavior --> ast.Oop
+ast.Behavior --> ast.Return
+ast.Behavior --> ast.If
+ast.Behavior --> ast.While
+ast.Behavior --> ast.For
 
 ast.Anatomy --> ast.Bug
 
 ast.Assign --> ast.Oop
 ast.Assign --> ast.Tag
+
+ast.Return --> ast.Oop
+
+ast.If --> ast.Oop
+ast.If --> ast.Matrix
+ast.If --> ast.Elif
+ast.If --> ast.Else
+
+ast.Elif --> ast.Oop
+ast.Elif --> ast.Matrix
+
+ast.Else --> ast.Matrix
+
+ast.While --> ast.Oop
+ast.While --> ast.Matrix
+
+ast.For --> ast.Tag
+ast.For --> ast.Oop
+ast.For --> ast.Matrix
+
+ast.Matrix --> ast.Signal
+
+ast.Signal --> ast.Behavior
 
 ast.Emitter --> ast.Literal
 ast.Emitter --> ast.Tag
@@ -147,9 +223,20 @@ ast.Emitter --> ast.Specie
 
 ast.Bug --> ast.Specie
 ast.Bug --> ast.Gene : 0..*
+ast.Bug --> ast.Ethics : 0..*
 
 ast.Gene --> ast.Tag
 ast.Gene --> ast.Specie
+
+ast.Ethics --> ast.Tag
+ast.Ethics --> ast.Signature : 0..1
+ast.Ethics --> ast.Specie : 0..1
+ast.Ethics --> ast.Matrix
+
+ast.Signature --> ast.EthicsBind : 0..*
+
+ast.EthicsBind --> ast.Tag
+ast.EthicsBind --> ast.Specie
 
 ast.Oop --> ast.Emitter
 ast.Oop --> ast.Trail : 0..*

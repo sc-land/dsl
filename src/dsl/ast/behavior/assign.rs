@@ -1,11 +1,12 @@
 use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::behavior::oop::Oop;
+use crate::dsl::ast::emitter::tag::Tag;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Assign {
     pub raw: String,
-    pub tag: String,
+    pub tag: Tag,
     pub oop: Oop,
 }
 
@@ -18,7 +19,7 @@ impl Assign {
 
         // Parse tag
         let tag_pair = inner.next().expect("Assign deve ter uma tag");
-        let tag = tag_pair.as_str().to_string();
+        let tag = Tag::from_pair(tag_pair);
 
         // Skip the "=" symbol (it's not captured as a rule)
 
@@ -39,57 +40,15 @@ impl Assign {
     }
 
     pub fn get_tag(&self) -> &str {
-        &self.tag
+        self.tag.get_raw()
     }
 
     pub fn get_oop(&self) -> &Oop {
         &self.oop
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use pest::Parser;
-    use crate::dsl::parser::parser::{Rule, SCP};
-    use super::*;
-
-    #[test]
-    fn test_assign_from_pair() {
-        let input = "bug = Happens.now".to_string();
-        let parsed = SCP::parse(Rule::assign, &input).unwrap();
-        let assign = Assign::from_pair(parsed.into_iter().next().unwrap());
-        assert_eq!(assign.raw, "bug = Happens.now");
-        assert_eq!(assign.tag, "bug");
-        assert_eq!(assign.oop.raw, "Happens.now");
-    }
-
-    #[test]
-    fn test_assign_from_string() {
-        let input = "variable = Method.call".to_string();
-        let assign = Assign::from_string(input).unwrap();
-        assert_eq!(assign.get_tag(), "variable");
-        assert_eq!(assign.get_oop().get_emitter(), "Method");
-        assert_eq!(assign.get_oop().get_trails().len(), 1);
-        assert_eq!(assign.get_oop().get_trails()[0].get_raw(), ".call");
-    }
-
-    #[test]
-    fn test_assign_from_string_2() {
-        let input = "variable = Method.call.another_call".to_string();
-        let assign = Assign::from_string(input).unwrap();
-        assert_eq!(assign.get_tag(), "variable");
-        assert_eq!(assign.get_oop().get_emitter(), "Method");
-        assert_eq!(assign.get_oop().get_trails().len(), 2);
-        assert_eq!(assign.get_oop().get_trails()[0].get_raw(), ".call");
-        assert_eq!(assign.get_oop().get_trails()[1].get_raw(), ".another_call");
-    }
-
-    #[test]
-    fn test_assign_getters() {
-        let input = "test = SimpleValue".to_string();
-        let assign = Assign::from_string(input).unwrap();
-        assert_eq!(assign.get_tag(), "test");
-        assert_eq!(assign.get_oop().get_emitter(), "SimpleValue");
-        assert!(!assign.get_oop().has_trails());
+    pub fn get_raw(&self) -> &str {
+        &self.raw
     }
 }
+

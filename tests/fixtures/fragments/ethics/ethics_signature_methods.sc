@@ -1,0 +1,1 @@
+ethics test_method()

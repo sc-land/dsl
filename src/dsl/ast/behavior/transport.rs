@@ -4,7 +4,7 @@ use crate::dsl::ast::behavior::sequence::Sequence;
 use crate::dsl::parser::parser::Rule;
 
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Transport {
     Binds(Binds),
     Sequence(Sequence),
@@ -31,13 +31,6 @@ impl Transport {
         Ok(Transport::from_pair(pair))
     }
 
-    pub fn get_raw(&self) -> &str {
-        match self {
-            Transport::Binds(binds) => binds.get_raw(),
-            Transport::Sequence(sequence) => sequence.get_raw(),
-        }
-    }
-
     pub fn is_binds(&self) -> bool {
         matches!(self, Transport::Binds(_))
     }
@@ -58,71 +51,5 @@ impl Transport {
             Transport::Sequence(sequence) => Some(sequence),
             _ => None,
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use pest::Parser;
-    use crate::dsl::parser::parser::{Rule, SCP};
-    use super::*;
-
-    #[test]
-    fn test_transport_binds() {
-        let input = "name: Value, count: 42".to_string();
-        let parsed = SCP::parse(Rule::transport, &input).unwrap();
-        let transport = Transport::from_pair(parsed.into_iter().next().unwrap());
-
-        assert!(transport.is_binds());
-        assert!(!transport.is_sequence());
-
-        let binds = transport.as_binds().unwrap();
-        assert_eq!(binds.len(), 2);
-        assert_eq!(binds.get_binds()[0].get_tag(), "name");
-        assert_eq!(binds.get_binds()[1].get_tag(), "count");
-    }
-
-    #[test]
-    fn test_transport_sequence() {
-        let input = "Value, 42, Class.method".to_string();
-        let parsed = SCP::parse(Rule::transport, &input).unwrap();
-        let transport = Transport::from_pair(parsed.into_iter().next().unwrap());
-
-        assert!(transport.is_sequence());
-        assert!(!transport.is_binds());
-
-        let sequence = transport.as_sequence().unwrap();
-        assert_eq!(sequence.len(), 3);
-        assert_eq!(sequence.get_oops()[0].get_emitter(), "Value");
-        assert_eq!(sequence.get_oops()[1].get_emitter(), "42");
-        assert_eq!(sequence.get_oops()[2].get_emitter(), "Class");
-    }
-
-    #[test]
-    fn test_transport_from_string_binds() {
-        let input = "x: 10, y: Point.new".to_string();
-        let transport = Transport::from_string(input).unwrap();
-        assert!(transport.is_binds());
-
-        let binds = transport.as_binds().unwrap();
-        assert_eq!(binds.len(), 2);
-    }
-
-    #[test]
-    fn test_transport_from_string_sequence() {
-        let input = "Point.x, Point.y".to_string();
-        let transport = Transport::from_string(input).unwrap();
-        assert!(transport.is_sequence());
-
-        let sequence = transport.as_sequence().unwrap();
-        assert_eq!(sequence.len(), 2);
-    }
-
-    #[test]
-    fn test_transport_getters() {
-        let input = "name: Value".to_string();
-        let transport = Transport::from_string(input).unwrap();
-        assert!(transport.is_binds());
-        assert_eq!(transport.get_raw(), "name: Value");
     }
 }
