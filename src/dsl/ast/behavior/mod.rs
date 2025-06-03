@@ -1,10 +1,10 @@
 pub mod assign;
 pub mod oop;
 pub mod trail;
-mod transport;
+pub mod transport;
 pub mod binds;
 pub mod bind;
-mod sequence;
+pub mod sequence;
 
 use pest::{iterators::Pair, Parser};
 use crate::dsl::parser::parser::{Rule, SCP};
@@ -17,7 +17,7 @@ pub use trail::{Trail, Catalysis, Carrier};
 pub use binds::{Binds, EthicsBinds};
 pub use bind::{Bind, EthicsBind};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Behavior {
     Statement(Statement),
     Assign(Assign),
@@ -53,7 +53,8 @@ impl Behavior {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::dsl::ast::behavior::Behavior;
+
 
     #[test]
     fn test_behavior_statement_while() {
@@ -73,7 +74,7 @@ mod tests {
 
         // Verifica se é um Statement
         match behavior {
-            Behavior::Statement(stmt) => {
+            Behavior::Statement(_stmt) => {
                 assert!(input.contains("while"), "Input should contain 'while'");
                 assert!(input.contains("counter"), "Input should contain 'counter'");
                 assert!(input.contains("end"), "Input should contain 'end'");
@@ -100,7 +101,7 @@ mod tests {
 
         // Verifica se é um Assign
         match behavior {
-            Behavior::Assign(assign) => {
+            Behavior::Assign(_assign) => {
                 assert!(input.contains("result"), "Input should contain 'result'");
                 assert!(input.contains("="), "Input should contain '='");
                 assert!(input.contains("calculator"), "Input should contain 'calculator'");
@@ -129,7 +130,7 @@ mod tests {
         assert!(behavior.get_oop().is_some(), "Should be able to get oop");
 
         // Verifica se é um Oop
-        if let Behavior::Oop(ref oop) = behavior {
+        if let Behavior::Oop(ref _oop) = behavior {
             assert!(input.contains("user"), "Input should contain 'user'");
             assert!(input.contains("getName"), "Input should contain 'getName'");
             assert!(input.contains("toUpperCase"), "Input should contain 'toUpperCase'");
