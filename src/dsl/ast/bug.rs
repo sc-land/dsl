@@ -1,9 +1,10 @@
 use pest::{iterators::Pair, Parser};
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::{Rule, SCP};
 use crate::dsl::ast::gene::Gene;
 use super::ethics::Ethics;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Bug {
     pub specie: String,
     pub genes: Vec<Gene>,

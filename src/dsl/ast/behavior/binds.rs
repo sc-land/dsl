@@ -1,14 +1,15 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use super::bind::{Bind, EthicsBind};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Binds {
     pub binds: Vec<Bind>,
 }
 
 /// EthicsBinds represents function parameter bindings for ethics functions
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EthicsBinds {
     pub binds: Vec<EthicsBind>,
 }

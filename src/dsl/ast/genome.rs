@@ -1,10 +1,11 @@
 use pest::iterators::Pair;
 use pest::Parser;
+use serde::{Deserialize, Serialize};
 use crate::dsl::ast::anatomy::Anatomy;
 use crate::dsl::ast::behavior::Behavior;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Genome {
     Anatomy(Anatomy),
     Behavior(Behavior),

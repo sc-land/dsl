@@ -1,10 +1,11 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::behavior::oop::Oop;
 
 /// Condition represents a conditional expression in control flow statements
 /// Based on the grammar: condition = { oop }
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Condition {
     /// A conditional expression containing an oop
     Oop(Oop)

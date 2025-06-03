@@ -1,4 +1,6 @@
-#[derive(Debug, Clone, PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Specie {
     // { ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC | "_")* }
     pub raw: String,

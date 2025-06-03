@@ -1,9 +1,10 @@
 use pest::iterators::Pair;
 use pest::Parser;
+use serde::{Deserialize, Serialize};
 use crate::dsl::ast::genome::Genome;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Strand {
     pub genome: Vec<Genome>,
 }

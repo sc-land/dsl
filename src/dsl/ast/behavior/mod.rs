@@ -7,6 +7,7 @@ pub mod bind;
 pub mod sequence;
 
 use pest::{iterators::Pair, Parser};
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::{Rule, SCP};
 use self::assign::Assign;
 use self::oop::Oop;
@@ -17,7 +18,7 @@ pub use trail::{Trail, Catalysis, Carrier};
 pub use binds::{Binds, EthicsBinds};
 pub use bind::{Bind, EthicsBind};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Behavior {
     Statement(Statement),
     Assign(Assign),

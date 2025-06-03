@@ -1,9 +1,10 @@
 use pest::iterators::Pair;
 use pest::Parser;
+use serde::{Deserialize, Serialize};
 use crate::dsl::ast::bug::Bug;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Anatomy {
     Bug(Bug),
 }

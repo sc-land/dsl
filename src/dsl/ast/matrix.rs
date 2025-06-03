@@ -1,8 +1,9 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::signal::Signal;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Matrix {
     pub raw: String,
     pub signals: Vec<Signal>,

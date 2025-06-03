@@ -2,8 +2,9 @@ use crate::dsl::ast::fly::Fly;
 use crate::dsl::parser::parser::{Rule, SCP};
 use pest::Parser;
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SC {
     pub fly: Fly,
 }

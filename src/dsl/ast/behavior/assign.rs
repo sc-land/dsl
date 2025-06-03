@@ -1,9 +1,10 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::behavior::oop::Oop;
 use crate::dsl::ast::emitter::tag::Tag;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Assign {
     pub raw: String,
     pub tag: Tag,

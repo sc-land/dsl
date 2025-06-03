@@ -1,10 +1,11 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::emitter::{Tag, Specie};
 use crate::dsl::ast::behavior::bind::EthicsBind;
 use crate::dsl::ast::matrix::Matrix;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Ethics {
     pub tag: Tag,
     pub signature: Option<Signature>,
@@ -12,7 +13,7 @@ pub struct Ethics {
     pub body: Option<Matrix>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Signature {
     pub binds: Option<Vec<EthicsBind>>,
 }
