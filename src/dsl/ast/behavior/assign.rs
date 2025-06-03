@@ -3,7 +3,7 @@ use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::behavior::oop::Oop;
 use crate::dsl::ast::emitter::tag::Tag;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Assign {
     pub raw: String,
     pub tag: Tag,

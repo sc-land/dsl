@@ -4,7 +4,7 @@ use crate::dsl::ast::behavior::sequence::Sequence;
 use crate::dsl::parser::parser::Rule;
 
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Transport {
     Binds(Binds),
     Sequence(Sequence),

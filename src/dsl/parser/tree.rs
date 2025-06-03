@@ -12,7 +12,7 @@ pub enum TreeParseError {
 }
 
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Tree {
     pub sc: SC,
 }

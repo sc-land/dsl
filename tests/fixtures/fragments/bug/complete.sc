@@ -1,5 +1,6 @@
 bug TestBug
   gene x Int
+  ethics simple_method
   ethics test_method
       x = 42
   end

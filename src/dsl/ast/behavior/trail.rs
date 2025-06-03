@@ -3,7 +3,7 @@ use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::emitter::Tag;
 use super::transport::Transport;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Catalysis {
     pub tag: Tag,
     pub carrier: Option<Carrier>,
@@ -26,7 +26,7 @@ impl Catalysis {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Carrier {
     pub transport: Option<Transport>,
 }
@@ -42,7 +42,7 @@ impl Carrier {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Trail {
     Catalysis(Catalysis),
     Carrier(Carrier),

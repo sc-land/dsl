@@ -3,7 +3,7 @@ use crate::dsl::parser::parser::Rule;
 use super::oop::Oop;
 use crate::dsl::ast::emitter::{tag::Tag, specie::Specie};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Bind {
     pub tag: Tag,
     pub oop: Oop,
@@ -45,7 +45,7 @@ impl Bind {
 }
 
 /// EthicsBind represents function parameter bindings that use species instead of oop
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EthicsBind {
     pub tag: Tag,
     pub specie: Specie,

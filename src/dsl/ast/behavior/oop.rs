@@ -3,7 +3,7 @@ use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::emitter::{Emitter, Literal, Specie, Tag};
 use super::trail::Trail;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Oop {
     pub emitter: Emitter,
     pub trails: Vec<Trail>,

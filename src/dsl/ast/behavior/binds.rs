@@ -2,13 +2,13 @@ use pest::iterators::Pair;
 use crate::dsl::parser::parser::Rule;
 use super::bind::{Bind, EthicsBind};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Binds {
     pub binds: Vec<Bind>,
 }
 
 /// EthicsBinds represents function parameter bindings for ethics functions
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EthicsBinds {
     pub binds: Vec<EthicsBind>,
 }
