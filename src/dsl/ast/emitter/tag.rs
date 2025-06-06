@@ -16,8 +16,4 @@ impl Tag {
         let raw = pair.as_str().to_string();
         Self { raw }
     }
-
-    pub fn get_raw(&self) -> &str {
-        &self.raw
-    }
 }
