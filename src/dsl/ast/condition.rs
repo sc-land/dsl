@@ -29,11 +29,4 @@ impl Condition {
         let pair = pairs.next().ok_or("No pair found")?;
         Ok(Condition::from_pair(pair))
     }
-
-    /// Returns the underlying Oop
-    pub fn get_oop(&self) -> &Oop {
-        match self {
-            Condition::Oop(oop) => oop,
-        }
-    }
 }
