@@ -39,17 +39,5 @@ impl Assign {
         let pair = pairs.next().ok_or("No pair found")?;
         Ok(Assign::from_pair(pair))
     }
-
-    pub fn get_tag(&self) -> &str {
-        self.tag.get_raw()
-    }
-
-    pub fn get_oop(&self) -> &Oop {
-        &self.oop
-    }
-
-    pub fn get_raw(&self) -> &str {
-        &self.raw
-    }
 }
 

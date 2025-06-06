@@ -35,14 +35,6 @@ impl Bind {
         let pair = pairs.next().ok_or("No pair found")?;
         Ok(Bind::from_pair(pair))
     }
-
-    pub fn get_tag(&self) -> &str {
-        self.tag.get_raw()
-    }
-
-    pub fn get_oop(&self) -> &Oop {
-        &self.oop
-    }
 }
 
 /// EthicsBind represents function parameter bindings that use species instead of oop
@@ -67,13 +59,5 @@ impl EthicsBind {
         let specie = Specie::new(specie_pair.as_str().to_string());
 
         EthicsBind { tag, specie }
-    }
-
-    pub fn get_tag(&self) -> &str {
-        self.tag.get_raw()
-    }
-
-    pub fn get_specie(&self) -> &Specie {
-        &self.specie
     }
 }

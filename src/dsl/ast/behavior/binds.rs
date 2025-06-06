@@ -36,43 +36,4 @@ impl Binds {
         let pair = pairs.next().ok_or("No pair found")?;
         Ok(Binds::from_pair(pair))
     }
-
-    pub fn from_ethics_binds_pair(pair: Pair<Rule>) -> EthicsBinds {
-        assert_eq!(pair.as_rule(), Rule::ethics_binds);
-
-        let mut binds = Vec::new();
-        for ethics_bind_pair in pair.into_inner() {
-            if ethics_bind_pair.as_rule() == Rule::ethics_bind {
-                binds.push(EthicsBind::from_pair(ethics_bind_pair));
-            }
-        }
-
-        EthicsBinds { binds }
-    }
-
-    pub fn get_binds(&self) -> &[Bind] {
-        &self.binds
-    }
-
-    pub fn len(&self) -> usize {
-        self.binds.len()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.binds.is_empty()
-    }
-}
-
-impl EthicsBinds {
-    pub fn get_binds(&self) -> &[EthicsBind] {
-        &self.binds
-    }
-
-    pub fn len(&self) -> usize {
-        self.binds.len()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.binds.is_empty()
-    }
 }
