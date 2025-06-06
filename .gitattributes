@@ -1,0 +1,17 @@
+# SC-Lang DSL Language Definition
+# Define arquivos .sc como linguagem personalizada SC-Lang
+*.sc linguist-language=SC-Lang
+
+# Arquivos .dsl também fazem parte da linguagem
+*.dsl linguist-language=SC-Lang
+
+# Arquivos de documentação
+*.md linguist-documentation
+*.puml linguist-documentation
+
+# Arquivos de configuração
+Cargo.toml linguist-detectable=false
+Cargo.lock linguist-detectable=false
+
+# Diretórios gerados
+target/ linguist-vendored

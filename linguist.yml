@@ -1,0 +1,18 @@
+# GitHub Linguist configuration for SC-Lang DSL
+
+# Override file classification
+overrides:
+  "*.sc": "SC-Lang"
+  "*.dsl": "SC-Lang"
+  "src/dsl/sc.dsl": "SC-Lang"
+
+# Vendor generated files
+vendored:
+  - "target/**/*"
+  - "Cargo.lock"
+
+# Documentation files
+documentation:
+  - "doc/**/*"
+  - "README.md"
+  - "*.md"

@@ -1,0 +1,21 @@
+# Configuração do GitHub Linguist para SC-Lang DSL
+# Este arquivo define a linguagem SC-Lang personalizada
+
+# Define a linguagem SC-Lang
+SC-Lang:
+  type: programming
+  color: "#FF6B35"
+  extensions:
+    - ".sc"
+  tm_scope: source.sc-lang
+  ace_mode: text
+  language_id: 999999
+  aliases:
+    - "sc"
+    - "sc-lang"
+
+# Configurações gerais do repositório
+overrides:
+  "*.sc": "SC-Lang"
+  "*.dsl": "SC-Lang"
+
