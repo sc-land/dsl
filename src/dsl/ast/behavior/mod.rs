@@ -7,6 +7,7 @@ pub mod bind;
 pub mod sequence;
 
 use pest::{iterators::Pair, Parser};
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::{Rule, SCP};
 use self::assign::Assign;
 use self::oop::Oop;
@@ -17,7 +18,7 @@ pub use trail::{Trail, Catalysis, Carrier};
 pub use binds::{Binds, EthicsBinds};
 pub use bind::{Bind, EthicsBind};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Behavior {
     Statement(Statement),
     Assign(Assign),
@@ -41,13 +42,6 @@ impl Behavior {
         let mut pairs = SCP::parse(Rule::behavior, &input)?;
         let pair = pairs.next().ok_or("No pair found")?;
         Ok(Behavior::from_pair(pair))
-    }
-
-    pub fn get_oop(&self) -> Option<&Oop> {
-        match self {
-            Behavior::Oop(oop) => Some(oop),
-            _ => None,
-        }
     }
 }
 
@@ -127,7 +121,7 @@ mod tests {
             .expect("Should parse oop behavior successfully");
 
         // Verifica se conseguimos extrair o oop usando o método utilitário
-        assert!(behavior.get_oop().is_some(), "Should be able to get oop");
+        // assert!(behavior.get_oop().is_some(), "Should be able to get oop");
 
         // Verifica se é um Oop
         if let Behavior::Oop(ref _oop) = behavior {
@@ -152,7 +146,7 @@ mod tests {
         let statement_behavior = Behavior::from_string(statement_input)
             .expect("Should parse statement");
         assert!(matches!(statement_behavior, Behavior::Statement(_)));
-        assert!(statement_behavior.get_oop().is_none());
+        // assert!(statement_behavior.get_oop().is_none());
 
         // Assign
         let assign_path = "tests/fixtures/fragments/behavior/assign_simple.sc".to_string();
@@ -161,7 +155,7 @@ mod tests {
         let assign_behavior = Behavior::from_string(assign_input)
             .expect("Should parse assign");
         assert!(matches!(assign_behavior, Behavior::Assign(_)));
-        assert!(assign_behavior.get_oop().is_none());
+        // assert!(assign_behavior.get_oop().is_none());
 
         // Oop
         let oop_path = "tests/fixtures/fragments/behavior/oop_method_chain.sc".to_string();
@@ -170,6 +164,6 @@ mod tests {
         let oop_behavior = Behavior::from_string(oop_input)
             .expect("Should parse oop");
         assert!(matches!(oop_behavior, Behavior::Oop(_)));
-        assert!(oop_behavior.get_oop().is_some());
+        // assert!(oop_behavior.get_oop().is_some());
     }
 }

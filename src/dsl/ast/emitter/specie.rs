@@ -1,4 +1,6 @@
-#[derive(Debug, Clone, PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Specie {
     // { ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC | "_")* }
     pub raw: String,
@@ -7,10 +9,6 @@ pub struct Specie {
 impl Specie {
     pub fn new(raw: String) -> Self {
         Self { raw }
-    }
-
-    pub fn get_raw(&self) -> &str {
-        &self.raw
     }
 
     pub fn from_pair(pair: pest::iterators::Pair<crate::dsl::parser::parser::Rule>) -> Self {

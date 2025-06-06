@@ -1,4 +1,5 @@
 use pest::Parser;
+use serde::{Deserialize, Serialize};
 use crate::dsl::ast::sc::SC;
 use crate::dsl::parser::parser::{Rule, SCP};
 use thiserror::Error;
@@ -12,7 +13,7 @@ pub enum TreeParseError {
 }
 
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Tree {
     pub sc: SC,
 }
@@ -29,7 +30,8 @@ impl Tree {
         }
     }
 
-    pub fn get_sc(&self) -> &SC {
-        &self.sc
-    }
+    // #[deprecated(since = "próxima versão", note = "Este método será removido em versões futuras")]
+    // pub fn get_sc(&self) -> &SC {
+    //     &self.sc
+    // }
 }

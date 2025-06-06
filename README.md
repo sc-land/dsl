@@ -30,7 +30,19 @@ cargo test
 ### Definições (Anatomy)
 ```
 bug Cat
+  gene energia Int
+  gene folego Int
+  ethics correr()
+    energia = energia.minus(1)
+  end
+end
+
 bug Dog
+  gene nome String
+  ethics latir()
+    "au au"
+  end
+end
 ```
 
 ### Operações (Behavior)

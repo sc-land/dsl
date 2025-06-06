@@ -1,8 +1,9 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use super::oop::Oop;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Sequence {
     pub oops: Vec<Oop>,
 }

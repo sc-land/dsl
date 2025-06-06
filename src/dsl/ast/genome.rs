@@ -1,10 +1,11 @@
 use pest::iterators::Pair;
 use pest::Parser;
+use serde::{Deserialize, Serialize};
 use crate::dsl::ast::anatomy::Anatomy;
 use crate::dsl::ast::behavior::Behavior;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Genome {
     Anatomy(Anatomy),
     Behavior(Behavior),
@@ -82,7 +83,7 @@ mod tests {
         // Como Anatomy é um enum com apenas Bug, podemos verificar através do pattern matching
         match anatomy {
             Anatomy::Bug(bug) => {
-                assert_eq!(bug.specie, "Cat", "Bug species should be Cat");
+                assert_eq!(bug.specie.raw, "Cat", "Bug species should be Cat");
                 assert_eq!(bug.genes.len(), 2, "Bug should have exactly 2 genes");
                 assert_eq!(bug.genes[0].tag.raw, "energia", "First gene should be energia");
                 assert_eq!(bug.genes[1].tag.raw, "folego", "Second gene should be folego");

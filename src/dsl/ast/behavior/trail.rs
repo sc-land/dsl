@@ -1,9 +1,10 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::emitter::Tag;
 use super::transport::Transport;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Catalysis {
     pub tag: Tag,
     pub carrier: Option<Carrier>,
@@ -26,7 +27,7 @@ impl Catalysis {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Carrier {
     pub transport: Option<Transport>,
 }
@@ -42,7 +43,7 @@ impl Carrier {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Trail {
     Catalysis(Catalysis),
     Carrier(Carrier),

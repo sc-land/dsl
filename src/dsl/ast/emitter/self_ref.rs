@@ -1,7 +1,8 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SelfRef {
     pub raw: String,
 }

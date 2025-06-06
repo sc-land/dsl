@@ -1,8 +1,10 @@
 use pest::iterators::Pair;
-use crate::dsl::parser::parser::Rule;
+use pest::Parser;
+use serde::{Deserialize, Serialize};
+use crate::dsl::parser::parser::{Rule, SCP};
 use crate::dsl::ast::emitter::{Tag, Specie};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Gene {
     pub tag: Tag,
     pub specie: Specie,
@@ -29,11 +31,11 @@ impl Gene {
         Gene { tag, specie }
     }
 
-    pub fn get_tag(&self) -> &Tag {
-        &self.tag
-    }
-
-    pub fn get_specie(&self) -> &Specie {
-        &self.specie
+    pub fn from_string(input: String) -> Self {
+        let pair = SCP::parse(Rule::gene, &input)
+            .expect("Failed to parse input")
+            .next()
+            .expect("No pair found");
+        Gene::from_pair(pair)
     }
 }

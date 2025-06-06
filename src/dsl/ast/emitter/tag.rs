@@ -1,4 +1,6 @@
-#[derive(Debug, Clone, PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Tag {
     // { !reserved ~ ASCII_ALPHA_LOWER ~ (ASCII_ALPHANUMERIC | "_")* }
     pub raw: String,
@@ -13,9 +15,5 @@ impl Tag {
         assert_eq!(pair.as_rule(), crate::dsl::parser::parser::Rule::tag);
         let raw = pair.as_str().to_string();
         Self { raw }
-    }
-
-    pub fn get_raw(&self) -> &str {
-        &self.raw
     }
 }

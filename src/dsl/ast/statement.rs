@@ -4,8 +4,9 @@ use crate::dsl::ast::emitter::Tag;
 use crate::dsl::ast::matrix::Matrix;
 use crate::dsl::parser::parser::Rule;
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Statement {
     If(IfStatement),
     While(WhileStatement),
@@ -13,7 +14,7 @@ pub enum Statement {
     Return(ReturnStatement),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct IfStatement {
     pub raw: String,
     pub condition: Condition,
@@ -22,21 +23,21 @@ pub struct IfStatement {
     pub else_block: Option<Matrix>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ElsifBlock {
     pub raw: String,
     pub condition: Condition,
     pub block: Matrix,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct WhileStatement {
     pub raw: String,
     pub condition: Condition,
     pub block: Matrix,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ForStatement {
     pub raw: String,
     pub variable: Tag,
@@ -44,7 +45,7 @@ pub struct ForStatement {
     pub block: Matrix,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReturnStatement {
     pub raw: String,
     pub value: Oop,

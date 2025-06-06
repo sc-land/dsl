@@ -1,10 +1,11 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::ast::behavior::binds::Binds;
 use crate::dsl::ast::behavior::sequence::Sequence;
 use crate::dsl::parser::parser::Rule;
 
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Transport {
     Binds(Binds),
     Sequence(Sequence),

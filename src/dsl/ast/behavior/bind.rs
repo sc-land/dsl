@@ -1,9 +1,10 @@
 use pest::iterators::Pair;
+use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use super::oop::Oop;
 use crate::dsl::ast::emitter::{tag::Tag, specie::Specie};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Bind {
     pub tag: Tag,
     pub oop: Oop,
@@ -34,18 +35,10 @@ impl Bind {
         let pair = pairs.next().ok_or("No pair found")?;
         Ok(Bind::from_pair(pair))
     }
-
-    pub fn get_tag(&self) -> &str {
-        self.tag.get_raw()
-    }
-
-    pub fn get_oop(&self) -> &Oop {
-        &self.oop
-    }
 }
 
 /// EthicsBind represents function parameter bindings that use species instead of oop
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EthicsBind {
     pub tag: Tag,
     pub specie: Specie,
@@ -66,13 +59,5 @@ impl EthicsBind {
         let specie = Specie::new(specie_pair.as_str().to_string());
 
         EthicsBind { tag, specie }
-    }
-
-    pub fn get_tag(&self) -> &str {
-        self.tag.get_raw()
-    }
-
-    pub fn get_specie(&self) -> &Specie {
-        &self.specie
     }
 }
