@@ -1,12 +1,13 @@
 use pest::{iterators::Pair, Parser};
 use serde::{Deserialize, Serialize};
+use crate::dsl::ast::emitter::Specie;
 use crate::dsl::parser::parser::{Rule, SCP};
 use crate::dsl::ast::gene::Gene;
 use super::ethics::Ethics;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Bug {
-    pub specie: String,
+    pub specie: Specie,
     pub genes: Vec<Gene>,
     pub ethics: Vec<Ethics>,
 }
@@ -15,22 +16,24 @@ impl Bug {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
         assert_eq!(pair.as_rule(), Rule::bug);
 
-        let mut inner = pair.into_inner();
-        let specie = inner.next()
-            .expect("Bug deve ter uma espécie")
-            .as_str()
-            .to_string();
+        let inner = pair.into_inner();
 
+        let mut specie = None;
         let mut genes = Vec::new();
         let mut ethics = Vec::new();
         for inner_pair in inner {
             match inner_pair.as_rule() {
+                Rule::specie => {
+                    specie = Some(Specie::from_pair(inner_pair));
+                }
                 Rule::gene => genes.push(Gene::from_pair(inner_pair)),
                 Rule::ethics => ethics.push(Ethics::from_pair(inner_pair)),
                 _ => {}
             }
         }
 
+        // Make sure specie is initialized, otherwise panic with a helpful message
+        let specie = specie.expect("Bug deve ter uma espécie");
         Bug { specie, genes, ethics }
     }
 
@@ -46,6 +49,8 @@ impl Bug {
 #[cfg(test)]
 mod tests {
     use std::fs;
+    use crate::dsl::parser::parser::SCP;
+
     use super::Bug;
 
     #[test]
@@ -62,7 +67,7 @@ mod tests {
         let bug = Bug::from_string(input);
 
         // Verifica o nome da espécie
-        assert_eq!(bug.specie, "TestBug", "Bug species should be TestBug");
+        assert_eq!(bug.specie.raw, "TestBug", "Bug species should be TestBug");
 
         // Verifica que tem o conteúdo esperado
         // assert!(bug.raw.contains("TestBug"), "Bug should contain species TestBug");
@@ -97,32 +102,77 @@ mod tests {
 
         let bug = Bug::from_string(input);
 
-        assert_eq!(bug.specie, "SimpleBug", "Bug species should be SimpleBug");
+        assert_eq!(bug.specie.raw, "SimpleBug", "Bug species should be SimpleBug");
         assert!(!bug.genes.is_empty(), "Bug should have genes");
         assert_eq!(bug.genes.len(), 1, "Bug should have exactly 1 gene");
         assert!(bug.ethics.is_empty(), "Bug should not have ethics");
         assert_eq!(bug.ethics.len(), 0, "Bug should have 0 ethics");
     }
 
-    // #[test]
-    // fn test_bug_raw_content() {
-    //     // Carrega o fixture completo
-    //     let path = "tests/fixtures/fragments/bug/complete.sc".to_string();
-    //     let input = fs::read_to_string(path)
-    //         .expect("Failed to read complete.sc file");
+    #[test]
+    fn test_bug_detailed_content() {
+        // Carrega o fixture completo
+        let path = "tests/fixtures/fragments/bug/complete.sc".to_string();
+        let input = fs::read_to_string(path)
+            .expect("Failed to read complete.sc file");
 
-    //     let bug = Bug::from_string(input.clone());
+        let bug = Bug::from_string(input);
 
-    //     // Verifica que o raw contém os elementos esperados
-    //     assert!(bug.raw.contains("bug TestBug"), "Raw should contain bug declaration");
-    //     assert!(bug.raw.contains("gene x Int"), "Raw should contain gene x Int");
-    //     assert!(bug.raw.contains("ethics test_method"), "Raw should contain ethics test_method");
-    //     assert!(bug.raw.contains("ethics test_method2()"), "Raw should contain ethics test_method2()");
-    //     assert!(bug.raw.contains("ethics test_method3(a: Int) Int"), "Raw should contain ethics test_method3 with parameters");
-    //     assert!(bug.raw.contains("x = 42"), "Raw should contain assignment x = 42");
-    //     assert!(bug.raw.contains("return x"), "Raw should contain return statement");
-    // }
-    //precisa ser testado de forma adequada
+        // Verifica os metadados do bug
+        assert_eq!(bug.specie.raw, "TestBug", "Bug species should be TestBug");
+
+        // Verifica os genes
+        assert_eq!(bug.genes.len(), 1, "Bug should have 1 gene");
+        assert_eq!(bug.genes[0].tag.raw, "x", "Gene should be named 'x'");
+        assert_eq!(bug.genes[0].specie.raw, "Int", "Gene 'x' should have type Int");
+
+        // Verifica os métodos de ethics
+        assert_eq!(bug.ethics.len(), 4, "Bug should have 4 ethics methods");
+
+        // Encontra os ethics pelo nome
+        let simple_method = &bug.ethics.iter().find(|e| e.tag.raw == "simple_method").expect("simple_method not found");
+        let test_method = &bug.ethics.iter().find(|e| e.tag.raw == "test_method").expect("test_method not found");
+        let test_method2 = &bug.ethics.iter().find(|e| e.tag.raw == "test_method2").expect("test_method2 not found");
+        let test_method3 = &bug.ethics.iter().find(|e| e.tag.raw == "test_method3").expect("test_method3 not found");
+
+        // Verifica simple_method
+        assert_eq!(simple_method.tag.raw, "simple_method", "First ethics should be named 'simple_method'");
+        assert!(simple_method.signature.is_none(), "simple_method should have no signature");
+        assert!(simple_method.body.is_none(), "simple_method should not have a body");
+
+        // Verifica test_method
+        assert_eq!(test_method.tag.raw, "test_method", "Ethics should be named 'test_method'");
+        assert!(test_method.body.is_some(), "test_method should have a body");
+
+        if let Some(body) = &test_method.body {
+            assert!(!body.signals.is_empty(), "test_method body should have signals");
+            // Verifique que o corpo contém instruções para atribuir x = 42
+            assert!(body.raw.contains("x = 42"), "test_method should contain 'x = 42' assignment");
+        }
+
+        // Verifica test_method2
+        assert_eq!(test_method2.tag.raw, "test_method2", "Ethics should be named 'test_method2'");
+        assert!(test_method2.signature.is_some(), "test_method2 should have a signature");
+        assert!(test_method2.body.is_some(), "test_method2 should have a body");
+
+        if let Some(body) = &test_method2.body {
+            assert!(body.raw.contains("x = 42"), "test_method2 should contain 'x = 42' assignment");
+        }
+
+        // Verifica test_method3 com parâmetros e feedback
+        assert_eq!(test_method3.tag.raw, "test_method3", "Ethics should be named 'test_method3'");
+        assert!(test_method3.signature.is_some(), "test_method3 should have a signature");
+        assert!(test_method3.feedback.is_some(), "test_method3 should have a feedback type");
+
+        if let Some(feedback) = &test_method3.feedback {
+            assert_eq!(feedback.raw, "Int", "test_method3 should return Int");
+        }
+
+        if let Some(body) = &test_method3.body {
+            assert!(body.raw.contains("x = 42"), "test_method3 should contain 'x = 42' assignment");
+            assert!(body.raw.contains("return x"), "test_method3 should contain 'return x' statement");
+        }
+    }
 
     #[test]
     fn test_bug_clone() {
@@ -139,6 +189,30 @@ mod tests {
     }
 
     #[test]
+    fn test_bug_low_level_parse() {
+        // Testa parse de baixo nível usando SCP::parse diretamente
+        use crate::dsl::parser::parser::Rule;
+        use pest::Parser;
+
+        let input = "bug CloneBug\n  gene z Bool\nend".to_string();
+
+        // Parse diretamente com a regra bug
+        let pairs = SCP::parse(Rule::bug, &input)
+            .expect("Failed to parse bug");
+
+        // Obtém o primeiro par do resultado
+        let pair = pairs.peek().expect("No pairs found");
+
+        // Cria o Bug a partir do par
+        let bug = Bug::from_pair(pair);
+
+        // Verifica o conteúdo básico
+        assert_eq!(bug.specie.raw, "CloneBug", "Bug species should be CloneBug");
+        assert_eq!(bug.genes.len(), 1, "Bug should have 1 gene");
+        assert_eq!(bug.ethics.len(), 0, "Bug should have 0 ethics");
+    }
+
+    #[test]
     fn test_bug_direct_access() {
         // Testa acesso direto aos atributos
         let input = "bug DirectBug\n  gene a Int\n  gene b String\nend".to_string();
@@ -146,7 +220,7 @@ mod tests {
         let bug = Bug::from_string(input);
 
         // Testa acesso direto aos atributos
-        assert_eq!(bug.specie, "DirectBug");
+        assert_eq!(bug.specie.raw, "DirectBug");
         assert_eq!(bug.genes.len(), 2);
         assert_eq!(bug.ethics.len(), 0);
     }
@@ -158,7 +232,7 @@ mod tests {
 
         let bug = Bug::from_string(input);
 
-        assert_eq!(bug.specie, "EmptyBug");
+        assert_eq!(bug.specie.raw, "EmptyBug");
         assert!(bug.genes.is_empty(), "Should have no genes");
         assert!(bug.ethics.is_empty(), "Should have no ethics");
         assert_eq!(bug.genes.len(), 0);

@@ -46,7 +46,7 @@ mod tests {
         // Verifica se temos um bug válido
         match anatomy {
             Anatomy::Bug(bug) => {
-                assert_eq!(bug.specie, "TestBug", "Bug species should be TestBug");
+                assert_eq!(bug.specie.raw, "TestBug", "Bug species should be TestBug");
                 assert!(!bug.genes.is_empty(), "Bug should have genes");
                 assert!(!bug.ethics.is_empty(), "Bug should have ethics");
             }
@@ -67,7 +67,7 @@ mod tests {
         // Verifica a estrutura
         match anatomy {
             Anatomy::Bug(bug) => {
-                assert_eq!(bug.specie, "TestBug", "Bug species should be TestBug");
+                assert_eq!(bug.specie.raw, "TestBug", "Bug species should be TestBug");
                 assert_eq!(bug.genes.len(), 1, "Bug should have exactly 1 gene");
                 assert_eq!(bug.ethics.len(), 4, "Bug should have exactly 4 ethics");
             }
@@ -104,7 +104,7 @@ mod tests {
         // Testa acesso direto aos atributos
         match anatomy {
             Anatomy::Bug(bug) => {
-                assert_eq!(bug.specie, "DirectBug");
+                assert_eq!(bug.specie.raw, "DirectBug");
                 assert_eq!(bug.genes.len(), 2);
                 assert_eq!(bug.ethics.len(), 0);
             }
