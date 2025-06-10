@@ -14,81 +14,78 @@ genome = { anatomy | behavior }
 // GENOME TYPES
 // ========================================
 anatomy  = { bug }
-behavior = { assign | statement | oop  }
+behavior = { assign | beat | trace }
 // ========================================
 // ANATOMY - BUG DEFINITIONS
 // ========================================
-bug         =  { "bug" ~ i ~ specie ~ i ~ (gene|ethics)* ~ i ~ "end" }
-gene        =  { "gene" ~ i ~ tag ~ i ~ specie ~ i }
+bug  = { "bug" ~ i ~ specie ~ i ~ (gene | ethics)* ~ i ~ "end" }
+gene = { "gene" ~ i ~ tag ~ i ~ specie ~ i }
 
 // Ethics (functions/methods) - suporte a todos os casos
-ethics = { ethics_head_body | ethics_head }
-ethics_head = _{ (ethics_d | ethics_c | ethics_b | ethics_a) ~ i }
+ethics           =  { ethics_head_body | ethics_head }
+ethics_head      = _{ (ethics_d | ethics_c | ethics_b | ethics_a) ~ i }
 ethics_head_body = _{ ethics_head ~ ethics_body }
-ethics_a = _{ t_ethics ~ i ~ tag  }
-ethics_b = _{ t_ethics ~ i ~ tag ~ i ~ feedback }
-ethics_c = _{ t_ethics ~ i ~ tag ~ i ~ signature }
-ethics_d = _{ t_ethics ~ i ~ tag ~ i ~ signature ~ i ~ feedback }
-t_ethics = _{ "ethics" }
-signature = { "(" ~ i ~ ethics_binds? ~ i ~ ")" }
-feedback = _{ specie }
-ethics_body = _{ i ~ matrix ~ i ~ nucleus_ends ~ i }
+ethics_a         = _{ t_ethics ~ i ~ tag }
+ethics_b         = _{ t_ethics ~ i ~ tag ~ i ~ feedback }
+ethics_c         = _{ t_ethics ~ i ~ tag ~ i ~ signature }
+ethics_d         = _{ t_ethics ~ i ~ tag ~ i ~ signature ~ i ~ feedback }
+t_ethics         = _{ "ethics" }
+signature        =  { "(" ~ i ~ ethics_binds? ~ i ~ ")" }
+feedback         = _{ specie }
+ethics_body      = _{ i ~ matrix ~ i ~ nucleus_ends ~ i }
 
 // ========================================
 // CODE BLOCKS
 // ========================================
-nucleus       =  { nucleus_start ~ i ~ matrix ~ i ~ nucleus_ends }
-nucleus_start = _{ "do" }
-nucleus_ends  = _{ "end" }
-matrix        =  { signal+ }
-signal        =  { i ~ ( behavior ) ~ i }
+nucleus_ends = _{ "end" }
+matrix       =  { signal+ }
+signal       =  { i ~ (behavior) ~ i }
 
 // ========================================
 // CONTROL FLOW STATEMENTS
 // ========================================
-statement = { if | while | for | return }
+beat = { sprout | swirl | crawl | nectar }
 
 // If statement
-if = {
-    if_start ~ condition ~ i ~ matrix ~ elsif* ~ else? ~ if_ends
+sprout       =  {
+    sprout_start ~ condition ~ i ~ matrix ~ splice* ~ den? ~ if_ends
 }
-if_start    = _{ "if" ~ i }
-elsif       =  { elsif_start ~ condition ~ i ~ matrix }
-elsif_start = _{ "elsif" ~ i }
-else        =  { else_start ~ matrix }
-else_start  = _{ "else" ~ i }
-if_ends     = _{ i ~ "end" }
+sprout_start = _{ "if" ~ i }
+splice       =  { splice_start ~ condition ~ i ~ matrix }
+splice_start = _{ "elsif" ~ i }
+den          =  { den_start ~ matrix }
+den_start    = _{ "else" ~ i }
+if_ends      = _{ i ~ "end" }
 
 // While loop
-while       =  {
+swirl       =  {
     while_start ~ condition ~ i ~ matrix ~ while_ends
 }
 while_start = _{ "while" ~ i }
 while_ends  = _{ i ~ "end" }
 
-
 // For loop
-for       =  {
-    for_start ~ each ~ in ~ oop ~ i ~ matrix ~ for_ends
+crawl       =  {
+    crawl_start ~ each ~ crawl_in ~ trace ~ i ~ matrix ~ crawl_ends
 }
-for_start = _{ "for" ~ i }
-each      = { tag ~ i }
-in        = _{ "in" ~ i }
-for_ends  = _{ i ~ "end" }
+crawl_start = _{ "for" ~ i }
+each        =  { tag ~ i }
+crawl_in    = _{ "in" ~ i }
+crawl_ends  = _{ i ~ "end" }
 
 // ========================================
 // EXPRESSIONS & ASSIGNMENTS
 // ========================================
-condition  = { oop }
-return     = { i ~ "return" ~ i ~ oop }
-assign     = { tag ~ i ~ "=" ~ i ~ oop }
+condition = _{ trace }
+nectar    =  { i ~ "return" ~ i ~ trace }
+assign    =  { tag ~ i ~ "=" ~ i ~ trace }
 
 // ========================================
 // OBJECT-ORIENTED PROGRAMMING
 // ========================================
-oop     = { emitter ~ trail* }
-emitter = { specie | tag | literal }
-trail   = { catalysis | carrier }
+trace   = { emitter ~ course* }
+emitter = { literal | self_ref | specie | tag }
+course  = { catalysis | carrier }
 
 // Method calls and property access
 catalysis = { "." ~ tag ~ carrier? }
@@ -96,11 +93,11 @@ carrier   = { "(" ~ transport? ~ ")" }
 transport = { binds | sequence }
 
 // Function parameters and arguments
-binds    = { bind ~ (i ~ "," ~ i ~ bind)* }
-sequence = { oop ~ (i ~ "," ~ i ~ oop)* }
-bind     = { tag ~ i ~ ":" ~ i ~ oop }
+binds        =  { bind ~ (i ~ "," ~ i ~ bind)* }
+sequence     =  { trace ~ (i ~ "," ~ i ~ trace)* }
+bind         =  { tag ~ i ~ ":" ~ i ~ trace }
 ethics_binds = _{ ethics_bind ~ (i ~ "," ~ i ~ ethics_bind)* }
-ethics_bind  = { tag ~ i ~ ":" ~ i ~ specie }
+ethics_bind  =  { tag ~ i ~ ":" ~ i ~ specie }
 
 // ========================================
 // LITERALS
