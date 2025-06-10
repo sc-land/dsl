@@ -1,130 +1,195 @@
 @startuml AST of DSL from SC language
 
-!theme crt-amber
-hide circle
+'!theme crt-amber
+'hide circle
 
 package ast {
+
     class SC {
         +fly Fly
     }
+    SC --> Fly
 
     class Fly {
         +strand Strand
     }
+    Fly --> Strand
 
     class Strand {
         +genome Genome[]
     }
+    Strand --> Genome
 
     enum Genome {
         Anatomy
         Behavior
     }
+    Genome --> Anatomy
+    Genome --> Behavior
+
+    enum Anatomy {
+        Bug
+    }
+    Anatomy --> Bug
 
     enum Behavior {
-        Assign
-        Oop
-        Return
-        If
-        While
-        For
+' Statement
+        Beat
+' Assign
+        Pollinate
+' Oop
+        Trace
     }
+    Behavior --> Beat
+    Behavior --> Pollinate
+    Behavior --> Trace
 
-    class Assign {
+    enum Beat {
+' IF
+        Sprout
+' WHILE
+        Swirl
+' FOR
+        Crawl
+' RETURN
+        Nectar
+    }
+    Beat --> Sprout
+    Beat --> Nectar
+    Beat --> Swirl
+    Beat --> Crawl
+
+    class Trace {
+        +forager Forager
+        +courses Course[]
+    }
+    Trace --> Forager
+    Trace --> Course
+
+    enum Forager {
+        Specie
+        Tag
+        Literal
+    }
+    Forager --> Literal
+    Forager --> Tag
+    Forager --> Specie
+
+    enum Course {
+        Carrier
+        Catalysis
+    }
+    Course --> Carrier
+    Course --> Catalysis
+
+    class Pollinate {
         +tag Tag
-        +oop Oop
+        +trace Trace
     }
+    Pollinate --> Tag
+    Pollinate --> Trace
 
-    class Return {
-        +oop Oop
+    class Nectar {
+        +trace Trace
     }
+    Nectar --> Trace
 
-    class If {
-        +condition Oop
+    class Sprout {
+        +condition Trace
         +matrix Matrix
-        +elsif Elif[]
-        +else Else?
+' elsif
+        +splices Splice[]
+' else
+        +den Matrix?
     }
+    Sprout --> Trace
+    Sprout --> Matrix
+    Sprout --> Splice
 
-    class Elif {
-        +condition Oop
+    class Splice {
+        +condition Trace
         +matrix Matrix
     }
+    Splice --> Trace
+    Splice --> Matrix
 
-    class Else {
+    class Swirl {
+        +condition Trace
         +matrix Matrix
     }
+    Swirl --> Trace
+    Swirl --> Matrix
 
-    class While {
-        +condition Oop
-        +matrix Matrix
-    }
-
-    class For {
+    class Crawl {
         +tag Tag
-        +oop Oop
+        +trace Trace
         +matrix Matrix
     }
+    Crawl --> Tag
+    Crawl --> Trace
+    Crawl --> Matrix
 
     class Matrix {
         +signals Signal[]
     }
+    Matrix --> Signal
 
-    class Signal {
-        +behavior Behavior
+    enum Signal {
+        behavior
     }
-
-    class Oop {
-        +emitter Emitter
-        +trails Trail[]
-    }
-
-    enum Trail {
-        Carrier
-        Catalysis
-    }
+    Signal --> Behavior
 
     class Catalysis {
         +tag Tag
         +carrier Carrier?
     }
+    Catalysis --> Tag
+    Catalysis --> Carrier
 
     class Carrier {
         +transport Transport?
     }
+    Carrier --> Transport
 
     enum Transport {
         Binds
         Sequence
     }
+    Transport --> Binds
+    Transport --> Sequence
 
     class Binds {
         +binds Bind[]
     }
+    Binds --> Bind
 
     class Bind {
         +tag Tag
-        +oop Oop
+        +trace Trace
     }
+    Bind --> Tag
+    Bind --> Trace
 
     class Sequence {
-        +oops Oop[]
+        +traces Trace[]
     }
-
-    enum Anatomy {
-        Bug
-    }
+    Sequence --> Trace
 
     class Bug {
         +specie Specie
         +genes Gene[]
         +ethics Ethics[]
     }
+    Bug --> Specie
+    Bug --> Gene
+    Bug --> Ethics
 
     class Gene {
         +tag Tag
         +specie Specie
     }
+    Gene --> Tag
+    Gene --> Specie
 
     class Ethics {
         +tag Tag
@@ -132,21 +197,22 @@ package ast {
         +feedback Specie?
         +matrix Matrix?
     }
+    Ethics --> Tag
+    Ethics --> Signature
+    Ethics --> Specie
+    Ethics --> Matrix
 
     class Signature {
-        +binds EthicsBind[]
+        +intakes Intake[]
     }
+    Signature --> Intake
 
-    class EthicsBind {
+    class Intake {
         +tag Tag
         +specie Specie
     }
-
-    enum Emitter {
-        Specie
-        Tag
-        Literal
-    }
+    Intake --> Tag
+    Intake --> Specie
 
     enum Literal {
         Bit
@@ -168,95 +234,9 @@ package ast {
 package parser {
     class Parser
     class Tree
+
+    Tree --> Parser
 }
-
 parser.Tree --> ast.SC
-parser.Tree --> parser.Parser
-
-ast.SC --> ast.Fly
-
-ast.Fly --> ast.Strand
-
-ast.Strand --> ast.Genome
-
-ast.Genome --> ast.Anatomy
-ast.Genome --> ast.Behavior
-
-ast.Behavior --> ast.Assign
-ast.Behavior --> ast.Oop
-ast.Behavior --> ast.Return
-ast.Behavior --> ast.If
-ast.Behavior --> ast.While
-ast.Behavior --> ast.For
-
-ast.Anatomy --> ast.Bug
-
-ast.Assign --> ast.Oop
-ast.Assign --> ast.Tag
-
-ast.Return --> ast.Oop
-
-ast.If --> ast.Oop
-ast.If --> ast.Matrix
-ast.If --> ast.Elif
-ast.If --> ast.Else
-
-ast.Elif --> ast.Oop
-ast.Elif --> ast.Matrix
-
-ast.Else --> ast.Matrix
-
-ast.While --> ast.Oop
-ast.While --> ast.Matrix
-
-ast.For --> ast.Tag
-ast.For --> ast.Oop
-ast.For --> ast.Matrix
-
-ast.Matrix --> ast.Signal
-
-ast.Signal --> ast.Behavior
-
-ast.Emitter --> ast.Literal
-ast.Emitter --> ast.Tag
-ast.Emitter --> ast.Specie
-
-ast.Bug --> ast.Specie
-ast.Bug --> ast.Gene : 0..*
-ast.Bug --> ast.Ethics : 0..*
-
-ast.Gene --> ast.Tag
-ast.Gene --> ast.Specie
-
-ast.Ethics --> ast.Tag
-ast.Ethics --> ast.Signature : 0..1
-ast.Ethics --> ast.Specie : 0..1
-ast.Ethics --> ast.Matrix
-
-ast.Signature --> ast.EthicsBind : 0..*
-
-ast.EthicsBind --> ast.Tag
-ast.EthicsBind --> ast.Specie
-
-ast.Oop --> ast.Emitter
-ast.Oop --> ast.Trail : 0..*
-
-ast.Trail --> ast.Carrier
-ast.Trail --> ast.Catalysis
-
-ast.Carrier --> ast.Transport : 0..1
-
-ast.Transport --> ast.Binds
-ast.Transport --> ast.Sequence
-
-ast.Binds --> ast.Bind
-
-ast.Bind --> ast.Tag
-ast.Bind --> ast.Oop
-
-ast.Sequence --> ast.Oop : 1..N
-
-ast.Catalysis --> ast.Tag
-ast.Catalysis --> ast.Carrier : 0..1
 
 @enduml
