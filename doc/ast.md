@@ -1,257 +1,190 @@
 # Documentação da AST (Abstract Syntax Tree)
 
 ## Visão Geral
-A AST (Abstract Syntax Tree) representa a estrutura hierárquica do código fonte da DSL. Cada nó da árvore representa uma construção do código fonte.
+A AST (Abstract Syntax Tree) do SC-LAND representa a estrutura hierárquica do código fonte da DSL usando uma nomenclatura biológica inspirada. Cada nó da árvore representa uma construção do código fonte organizada em uma hierarquia modular.
 
-## Estrutura Principal
+## Arquitetura Hierárquica
+
+A AST segue uma estrutura hierárquica bem definida:
+```
+SC → Fly → Strand → Genome → {Anatomy | Behavior}
+```
 
 ### SC (Super Cell)
-- **Descrição**: Nó raiz da AST
+- **Descrição**: Nó raiz da AST, representa o contêiner principal do programa
+- **Localização**: `src/dsl/ast/sc/mod.rs`
 - **Atributos**:
   - `fly`: Referência para o nó Fly
 
 ### Fly
-- **Descrição**: Representa uma unidade de execução
+- **Descrição**: Representa uma unidade de execução completa, contendo todo o código do programa
+- **Localização**: `src/dsl/ast/sc/fly/mod.rs`
 - **Atributos**:
   - `strand`: Referência para o nó Strand
 
 ### Strand
-- **Descrição**: Contém os genomas (Anatomy e Behavior)
+- **Descrição**: Sequência de genomas que formam o programa, contendo definições estruturais e comportamentais
+- **Localização**: `src/dsl/ast/sc/fly/strand/mod.rs`
 - **Atributos**:
-  - `genome`: Array de genomas (Anatomy e Behavior)
+  - `genome`: Vector de genomas (Anatomy e Behavior)
 
 ## Genomas
 
+### Genome (Enum)
+- **Descrição**: União tipo que pode ser Anatomy ou Behavior
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/mod.rs`
+- **Variantes**:
+  - `Anatomy`: Define estruturas de dados (classes/objetos)
+  - `Behavior`: Define operações e comportamentos
+
 ### Anatomy
-- **Descrição**: Define a estrutura anatômica
+- **Descrição**: Define a estrutura anatômica de objetos (equivalente a classes)
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/mod.rs`
 - **Tipos**:
-  - `Bug`: Representa um bug com espécie, genes e éticas
+  - `Bug`: Representa uma classe/objeto com propriedades e métodos
 
+#### Bug
+- **Descrição**: Estrutura principal que define uma classe
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/bug/mod.rs`
+- **Componentes**:
+  - `specie`: Nome/tipo da classe
+  - `gene`: Propriedades da classe (equivalente a campos/atributos)
+  - `ethics`: Métodos da classe (equivalente a funções/métodos)
+
+#### Gene
+- **Descrição**: Representa uma propriedade/atributo de uma classe
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/bug/gene/mod.rs`
+- **Componentes**:
+  - `tag`: Nome da propriedade
+  - `specie`: Tipo da propriedade
+
+#### Ethics
+- **Descrição**: Representa um método/função de uma classe
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/bug/ethics/mod.rs`
+- **Componentes**:
+  - `tag`: Nome do método
+  - `signature`: Parâmetros do método (opcional)
+  - `feedback`: Tipo de retorno (opcional)
+  - `matrix`: Corpo do método (bloco de código)
 ### Behavior
-- **Descrição**: Define o comportamento
+- **Descrição**: Define o comportamento e operações do programa
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/behavior/mod.rs`
 - **Tipos**:
-  - `Assign`: Atribuição de valores
-  - `Oop`: Operação orientada a objetos
-  - `Return`: Retorno de valor
-  - `If`: Estrutura condicional
-  - `While`: Loop condicional
-  - `For`: Loop iterativo
+  - `Assign`: Atribuição de valores a variáveis
+  - `Beat`: Operações orientadas a objetos complexas
+  - `Bind`: Ligação simples de valores
+  - `Binds`: Múltiplas ligações
+  - `Sequence`: Sequência de operações
+  - `Transport`: Transporte de dados
 
-## Componentes de Behavior
-
-### Assign
-- **Descrição**: Representa uma atribuição
+#### Assign
+- **Descrição**: Representa uma atribuição de valor
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/behavior/assign.rs`
 - **Atributos**:
-  - `tag`: Tag associada
-  - `oop`: Operação a ser atribuída
+  - `tag`: Variável de destino
+  - `beat`: Operação a ser atribuída
 
-### Return
-- **Descrição**: Representa um retorno
-- **Atributos**:
-  - `oop`: Operação a ser retornada
+#### Beat
+- **Descrição**: Operação orientada a objetos (equivalente a chamadas de método)
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/behavior/beat/mod.rs`
+- **Componentes**:
+  - `forager`: Emissor da operação (objeto ou literal)
+  - `course`: Trilhas de operação (métodos e parâmetros)
 
-### If
-- **Descrição**: Estrutura condicional
-- **Atributos**:
-  - `condition`: Condição (Oop)
-  - `matrix`: Bloco principal
-  - `elsif`: Array de condições alternativas
-  - `else`: Bloco opcional
+##### Forager (Emitter)
+- **Descrição**: Emissor de uma operação
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/behavior/trace/forager/mod.rs`
+- **Tipos**:
+  - `Literal`: Valores literais (números, strings, etc.)
+  - `SelfRef`: Referência a variáveis ou objetos
 
-### While
-- **Descrição**: Loop condicional
-- **Atributos**:
-  - `condition`: Condição (Oop)
-  - `matrix`: Bloco do loop
-
-### For
-- **Descrição**: Loop iterativo
-- **Atributos**:
-  - `tag`: Tag do iterador
-  - `oop`: Coleção a ser iterada
-  - `matrix`: Bloco do loop
-
-### Oop
-- **Descrição**: Operação orientada a objetos
-- **Atributos**:
-  - `emitter`: Emissor (Specie, Tag ou Literal)
-  - `trails`: Array de trilhas (Carrier ou Catalysis)
+##### Course (Trails)
+- **Descrição**: Trilhas que definem como a operação é executada
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/behavior/trace/course/mod.rs`
+- **Tipos**:
+  - `Carrier`: Transporta dados/parâmetros
+  - `Catalysis`: Catalisa operações (chamadas de método)
 
 ## Estruturas de Código
 
 ### Matrix
-- **Descrição**: Bloco de código
+- **Descrição**: Bloco de código que contém múltiplas operações
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/bug/ethics/matrix/mod.rs`
 - **Atributos**:
-  - `signals`: Array de sinais (comportamentos)
+  - `signal`: Array de sinais (comportamentos individuais)
 
 ### Signal
-- **Descrição**: Comportamento individual
+- **Descrição**: Comportamento individual dentro de um bloco
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/bug/ethics/matrix/signal/mod.rs`
 - **Atributos**:
   - `behavior`: Comportamento associado
 
-## Trilhas (Trails)
-
-### Carrier
-- **Descrição**: Transporta dados
-- **Atributos**:
-  - `transport`: Transporte opcional (Binds ou Sequence)
-
-### Catalysis
-- **Descrição**: Catalisa operações
-- **Atributos**:
-  - `tag`: Tag associada
-  - `carrier`: Carrier opcional
-
-## Transportes
-
-### Binds
-- **Descrição**: Ligações entre elementos
-- **Atributos**:
-  - `binds`: Array de ligações
-
-### Sequence
-- **Descrição**: Sequência de operações
-- **Atributos**:
-  - `oops`: Array de operações
-
-## Anatomia
-
-### Bug
-- **Descrição**: Representa um bug
-- **Atributos**:
-  - `specie`: Espécie do bug
-  - `genes`: Array de genes
-  - `ethics`: Array de éticas
-
-### Gene
-- **Descrição**: Representa um gene
-- **Atributos**:
-  - `tag`: Tag associada
-  - `specie`: Espécie associada
-
-### Ethics
-- **Descrição**: Representa uma ética (método/função)
-- **Atributos**:
-  - `tag`: Tag associada
-  - `signature`: Assinatura opcional
-  - `feedback`: Feedback opcional
-  - `matrix`: Bloco de código
-
-### Signature
-- **Descrição**: Assinatura de ética
-- **Atributos**:
-  - `binds`: Array de ligações de parâmetros
-
-### EthicsBind
-- **Descrição**: Ligação de parâmetro de ética
-- **Atributos**:
-  - `tag`: Tag do parâmetro
-  - `specie`: Espécie do parâmetro
-
-## Tipos de Dados
-
-### Emitter
-- **Tipos**:
-  - `Specie`: Espécie
-  - `Tag`: Tag
-  - `Literal`: Valor literal
+## Tipos de Dados e Literais
 
 ### Literal
+- **Descrição**: Valores constantes do programa
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/behavior/trace/forager/literal.rs`
 - **Tipos**:
-  - `Bit`: Valor booleano
-  - `Hex`: Valor hexadecimal
-  - `Int`: Número inteiro
-  - `Str`: String
-  - `Decimal`: Número decimal
+  - `Bit`: Valor booleano (true/false)
+  - `Hex`: Valor hexadecimal (0xFF)
+  - `Int`: Número inteiro (42)
+  - `Str`: String ("hello")
+  - `Decimal`: Número decimal (3.14)
 
-## Observações
-- A estrutura permite composição complexa de operações através de trilhas e transportes
-- O sistema de tipos é flexível, permitindo diferentes tipos de emissores e literais
-- Suporte completo a programação orientada a objetos com éticas (métodos)
-- Suporte a estruturas de controle de fluxo (if, while, for)
-- Suporte a blocos de código através de matrix
+### Specie
+- **Descrição**: Tipos de dados do sistema
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/bug/gene/specie.rs`
+- **Exemplos**: Int, String, Bool, etc.
 
-# SC-LAND AST Documentation
+### Tag
+- **Descrição**: Identificadores/nomes de variáveis, métodos, etc.
+- **Localização**: `src/dsl/ast/sc/fly/strand/genome/anatomy/bug/gene/tag.rs`
 
-## Estrutura da AST
+## Organização Modular
 
-A AST (Abstract Syntax Tree) do SC-LAND é composta pelos seguintes componentes principais:
+A nova arquitetura segue um padrão hierárquico que reflete a estrutura conceitual:
 
-### SC (Super Cell)
-- Nó raiz da AST
-- Contém um único nó Fly
+```
+src/dsl/ast/sc/
+├── mod.rs                          # SC (Super Cell)
+└── fly/
+    ├── mod.rs                      # Fly
+    └── strand/
+        ├── mod.rs                  # Strand
+        └── genome/
+            ├── mod.rs              # Genome (enum)
+            ├── anatomy/            # Definições estruturais
+            │   ├── mod.rs
+            │   └── bug/
+            │       ├── mod.rs      # Bug (classe)
+            │       ├── gene/       # Propriedades
+            │       └── ethics/     # Métodos
+            └── behavior/           # Operações
+                ├── mod.rs
+                ├── assign.rs       # Atribuições
+                ├── beat/           # Operações OOP
+                └── trace/          # Trilhas de execução
+```
 
-### Fly
-- Representa uma unidade de execução
-- Contém um único nó Strand
+## Vantagens da Nova Arquitetura
 
-### Strand
-- Sequência de genomas
-- Contém um array de Genome
+1. **Modularidade**: Cada conceito tem seu próprio módulo
+2. **Hierarquia Clara**: A estrutura de pastas reflete a hierarquia conceitual
+3. **Manutenibilidade**: Fácil localização e modificação de componentes
+4. **Extensibilidade**: Novos tipos podem ser adicionados sem afetar outros
+5. **Nomenclatura Intuitiva**: Termos biológicos facilitam o entendimento
 
-### Genome
-- Pode ser Anatomy ou Behavior
-- Anatomy: Define a estrutura anatômica
-- Behavior: Define o comportamento
+## Observações de Implementação
 
-### Anatomy
-- Enum com variante Bug
-- Bug: Contém specie, genes e ethics
-
-### Behavior
-- Enum com variantes:
-  - Statement (If, While, For)
-  - Assign (atribuição)
-  - Oop (operação orientada a objetos)
-
-### Ethics
-- Representa um método/função
-- Atributos:
-  - tag: nome do método
-  - signature: parâmetros (opcional)
-  - feedback: tipo de retorno (opcional)
-  - body: bloco de código (opcional)
-
-### Gene
-- Representa uma propriedade
-- Atributos:
-  - tag: nome da propriedade
-  - specie: tipo da propriedade
-
-## Gramática
-
-### Tokens Básicos
-- `bug`: Início de definição de bug
-- `gene`: Definição de propriedade
-- `ethics`: Definição de método
-- `end`: Fim de bloco
-- `if`: Início de condicional
-- `while`: Início de loop
-- `for`: Início de iteração
-- `return`: Retorno de valor
-
-### Tipos
-- `Int`: Número inteiro
-- `String`: Texto
-- `Bool`: Booleano
-- `Void`: Sem retorno
-
-### Operadores
-- `.`: Acesso a método/propriedade
-- `=`: Atribuição
-- `(`: Início de parâmetros
-- `)`: Fim de parâmetros
-- `:`: Separação de tipo
-
-## Notas de Implementação
-
-1. Todos os componentes são imutáveis por padrão
-2. A AST suporta clonagem para manipulação segura
-3. Os testes cobrem todos os casos de uso principais
-4. A documentação é mantida atualizada com a implementação
-5. Toda operação é orientada a objetos, usando métodos apropriados
-6. Os testes de erro são feitos através de fragmentos específicos
+- Todos os componentes implementam `Debug`, `Clone`, `PartialEq`, `Eq`, `Serialize`, `Deserialize`
+- A estrutura suporta parsing seguro através do Pest parser
+- Cada nó da AST pode ser construído a partir de `Pair<Rule>` do Pest
+- O sistema permite composição complexa através de trilhas e transportes
+- Suporte completo a programação orientada a objetos
+- Estruturas de controle de fluxo integradas
 
 ## Diagramas
 
-Ver `ast.puml` para diagramas detalhados da estrutura da AST.
+Para uma visualização completa da estrutura da AST, consulte:
+- **PlantUML**: [`doc/ast.puml`](ast.puml) - Diagrama detalhado da hierarquia
+- **Gramática**: [`src/dsl/sc.dsl`](../src/dsl/sc.dsl) - Especificação formal da sintaxe
