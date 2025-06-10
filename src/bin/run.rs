@@ -7,7 +7,7 @@ fn main() {
         .expect("Failed to read input.sc file");
 
     // Parse the input using the Tree parser
-    match Tree::parse_input(input) {
+    match Tree::parse(input) {
         Ok(ast) => {
             println!("Successfully parsed AST:");
             println!("{:#?}", ast);

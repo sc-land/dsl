@@ -19,7 +19,7 @@ pub struct Tree {
 }
 
 impl Tree {
-    pub fn parse_input(input: String) -> Result<Self, TreeParseError> {
+    pub fn parse(input: String) -> Result<Self, TreeParseError> {
         let parsed = SCP::parse(Rule::sc, &input);
         match parsed {
             Ok(parsed) => {
@@ -29,9 +29,4 @@ impl Tree {
             Err(e) => Err(TreeParseError::from(e)),
         }
     }
-
-    // #[deprecated(since = "próxima versão", note = "Este método será removido em versões futuras")]
-    // pub fn get_sc(&self) -> &SC {
-    //     &self.sc
-    // }
 }
