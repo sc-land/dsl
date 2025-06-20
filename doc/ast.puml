@@ -35,22 +35,59 @@ package ast {
     Anatomy --> Totem
 
     class Totem {
-        primor Str
-        aspects Aspect[]
+        +insignia Specie
+        +aspects Aspect[]
     }
+    Totem --> Specie
     Totem --> Aspect
 
     class Aspect {
-        primor Str
-        ingest Ingest?
+        +emblem Emblem
+        +zoo Zoo?
     }
-    Aspect --> Ingest
+    Aspect --> Emblem
+    Aspect --> Zoo
 
-    enum Ingest {
-        Signature
-        Species(Specie[])
+    enum Emblem {
+        Specie
+        Primor
     }
-    Ingest --> Signature
+    Emblem --> Specie
+    Emblem --> Primor
+
+    class Zoo {
+        +transport ZooTransport
+    }
+    Zoo --> ZooTransport
+
+    enum ZooTransport {
+        Plain
+        Signed
+    }
+    ZooTransport --> Plain
+    ZooTransport --> Signed
+
+    class Plain {
+        +species Specie[]
+    }
+    Plain --> Specie
+
+    class Signed {
+        +biomes Biome[]
+    }
+    Signed --> Biome
+
+    class Biome {
+        +primor Primor
+        +specie Specie
+    }
+    Biome --> Primor
+    Biome --> Specie
+
+    class Primor {
+        +tag Tag
+    }
+    Primor --> Tag
 
     enum Behavior {
 ' Statement

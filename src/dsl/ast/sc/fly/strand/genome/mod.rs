@@ -18,11 +18,11 @@ impl Genome {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
         assert_eq!(pair.as_rule(), Rule::genome);
 
-        let inner_pair = pair.into_inner().next().unwrap();
-        match inner_pair.as_rule() {
-            Rule::anatomy => Genome::Anatomy(Anatomy::from_pair(inner_pair)),
-            Rule::behavior => Genome::Behavior(Behavior::from_pair(inner_pair)),
-            _ => panic!("Regra inesperada dentro de genome: {:?}", inner_pair.as_rule()),
+        let inner = pair.into_inner().next().unwrap();
+        match inner.as_rule() {
+            Rule::anatomy => Genome::Anatomy(Anatomy::from_pair(inner)),
+            Rule::behavior => Genome::Behavior(Behavior::from_pair(inner)),
+            _ => panic!("Regra inesperada dentro de genome: {:?}", inner.as_rule()),
         }
     }
 
@@ -92,6 +92,7 @@ mod tests {
                 assert_eq!(bug.genes[1].tag.raw, "folego", "Second gene should be folego");
                 assert_eq!(bug.ethics.len(), 0, "Bug should have no ethics");
             }
+            Anatomy::Totem(_totem) => todo!()
         }
     }
 

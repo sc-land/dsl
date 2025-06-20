@@ -22,12 +22,10 @@ impl Sprout {
 
         // Parse condition
         let condition_pair = pairs.next().expect("If statement should have a condition");
-        println!("Condition pair rule: {:?}", condition_pair.as_rule());
         let condition = Trace::from_pair(condition_pair);
 
         // Parse then block
         let matrix_pair = pairs.next().expect("If statement should have a then block");
-        println!("Matrix pair rule: {:?}", matrix_pair.as_rule());
         let then_block = Matrix::from_pair(matrix_pair);
 
         let mut elsif_blocks = Vec::new();
@@ -35,28 +33,21 @@ impl Sprout {
 
         // Parse elsif and else blocks
         while let Some(current_pair) = pairs.next() {
-            println!("Current pair rule: {:?}", current_pair.as_rule());
             match current_pair.as_rule() {
                 Rule::splice => {
                     let raw_elsif = current_pair.as_str().to_string();
-                    println!("Elsif raw: {}", raw_elsif);
                     let mut elsif_pairs = current_pair.into_inner();
 
                     // Parse elsif condition
                     let elsif_condition_pair = elsif_pairs
                         .next()
                         .expect("Elsif block should have a condition");
-                    println!(
-                        "Elsif condition pair rule: {:?}",
-                        elsif_condition_pair.as_rule()
-                    );
                     let elsif_condition = Trace::from_pair(elsif_condition_pair);
 
                     // Parse elsif matrix block
                     let elsif_matrix_pair = elsif_pairs
                         .next()
                         .expect("Elsif block should have a matrix block");
-                    println!("Elsif matrix pair rule: {:?}", elsif_matrix_pair.as_rule());
                     let elsif_matrix = Matrix::from_pair(elsif_matrix_pair);
 
                     elsif_blocks.push(Splice {
@@ -82,8 +73,6 @@ impl Sprout {
                 ),
             }
         }
-
-        println!("Number of elsif blocks: {}", elsif_blocks.len());
 
         Sprout {
             condition,

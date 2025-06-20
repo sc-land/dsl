@@ -19,19 +19,18 @@ impl Bug {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
         assert_eq!(pair.as_rule(), Rule::bug);
 
-        let inner = pair.into_inner();
-
         let mut specie = None;
         let mut genes = Vec::new();
         let mut ethics = Vec::new();
-        for inner_pair in inner {
-            match inner_pair.as_rule() {
+
+        for inner in pair.into_inner() {
+            match inner.as_rule() {
                 Rule::specie => {
-                    specie = Some(Specie::from_pair(inner_pair));
+                    specie = Some(Specie::from_pair(inner));
                 }
-                Rule::gene => genes.push(Gene::from_pair(inner_pair)),
-                Rule::ethics => ethics.push(Ethics::from_pair(inner_pair)),
-                _ => {}
+                Rule::gene => genes.push(Gene::from_pair(inner)),
+                Rule::ethics => ethics.push(Ethics::from_pair(inner)),
+                _ => todo!()
             }
         }
 

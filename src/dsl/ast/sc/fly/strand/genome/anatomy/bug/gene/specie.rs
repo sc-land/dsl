@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use crate::dsl::parser::parser::Rule;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Specie {
@@ -11,8 +12,8 @@ impl Specie {
         Self { raw }
     }
 
-    pub fn from_pair(pair: pest::iterators::Pair<crate::dsl::parser::parser::Rule>) -> Self {
-        assert_eq!(pair.as_rule(), crate::dsl::parser::parser::Rule::specie);
+    pub fn from_pair(pair: pest::iterators::Pair<Rule>) -> Self {
+        assert_eq!(pair.as_rule(), Rule::specie);
         let raw = pair.as_str().to_string();
         Self { raw }
     }
