@@ -13,8 +13,20 @@ genome = { anatomy | behavior }
 // ========================================
 // GENOME TYPES
 // ========================================
-anatomy  = { bug }
+anatomy  = { bug | totem }
 behavior = { assign | beat | trace }
+// ========================================
+// ANATOMY - TOTEM DEFINITIONS
+// ========================================
+totem    =  { "totem" ~ i ~ insignia ~ i ~ aspect+ ~ i ~ "end" }
+insignia = @{ specie }
+aspect   =  { emblem ~ i ~ zoo? ~ i }
+emblem   = @{ specie | primor }
+zoo      =  { "(" ~ i ~ (plain | signed) ~ i ~ ")" }
+plain    =  { specie ~ (i ~ "," ~ i ~ specie)* }
+signed = { biome ~ (i ~ "," ~ i ~ biome)* }
+biome  = { primor ~ i ~ ":" ~ i ~ specie }
+primor = @{ tag }
 // ========================================
 // ANATOMY - BUG DEFINITIONS
 // ========================================
@@ -138,5 +150,6 @@ reserved = {
     | "ethics"
     | "gene"
     | "bug"
+    | "totem"
     ) ~ !(ASCII_ALPHANUMERIC | "_")
 }

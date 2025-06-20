@@ -1,7 +1,7 @@
 @startuml AST of DSL from SC language
 
-'!theme crt-amber
-'hide circle
+!theme crt-amber
+hide circle
 
 package ast {
 
@@ -29,8 +29,28 @@ package ast {
 
     enum Anatomy {
         Bug
+        Totem
     }
     Anatomy --> Bug
+    Anatomy --> Totem
+
+    class Totem {
+        primor Str
+        aspects Aspect[]
+    }
+    Totem --> Aspect
+
+    class Aspect {
+        primor Str
+        ingest Ingest?
+    }
+    Aspect --> Ingest
+
+    enum Ingest {
+        Signature
+        Species(Specie[])
+    }
+    Ingest --> Signature
 
     enum Behavior {
 ' Statement
