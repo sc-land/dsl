@@ -36,58 +36,26 @@ package ast {
 
     class Totem {
         +insignia Specie
-        +aspects Aspect[]
+        +folklores Folklore[]
     }
-    Totem --> Specie
-    Totem --> Aspect
+    Totem --> Folklore
 
-    class Aspect {
-        +emblem Emblem
-        +zoo Zoo?
+    class Folklore {
+        +prophecy Str
+        +runes Runes?
     }
-    Aspect --> Emblem
-    Aspect --> Zoo
+    Folklore --> Runes
 
-    enum Emblem {
-        Specie
-        Primor
+    enum Runes {
+        Whispers(Vec<Specie>)
+        Invocations(Vec<Entity>)
     }
-    Emblem --> Specie
-    Emblem --> Primor
+    Runes --> Entity
 
-    class Zoo {
-        +transport ZooTransport
+    class Entity {
+        +primor Str
+        +specie Str
     }
-    Zoo --> ZooTransport
-
-    enum ZooTransport {
-        Plain
-        Signed
-    }
-    ZooTransport --> Plain
-    ZooTransport --> Signed
-
-    class Plain {
-        +species Specie[]
-    }
-    Plain --> Specie
-
-    class Signed {
-        +biomes Biome[]
-    }
-    Signed --> Biome
-
-    class Biome {
-        +primor Primor
-        +specie Specie
-    }
-    Biome --> Primor
-    Biome --> Specie
-
-    class Primor {
-        +tag Tag
-    }
-    Primor --> Tag
 
     enum Behavior {
 ' Statement

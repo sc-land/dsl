@@ -1,16 +1,15 @@
 use pest::iterators::Pair;
 use pest::Parser;
 use serde::{Deserialize, Serialize};
-use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::specie::Specie;
-use crate::dsl::ast::sc::fly::strand::genome::anatomy::totem::aspect::Aspect;
+use crate::dsl::ast::sc::fly::strand::genome::anatomy::totem::folklore::Folklore;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-pub mod aspect;
+pub mod folklore;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Totem {
     pub insignia: Insignia,
-    pub aspects: Vec<Aspect>,
+    pub folklores: Vec<Folklore>,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Insignia {
@@ -42,13 +41,13 @@ impl Totem {
                 Rule::insignia => {
                     insignia = Some(Insignia::from_pair(inner));
                 }
-                Rule::aspect => aspects.push(Aspect::from_pair(inner)),
+                Rule::aspect => aspects.push(Folklore::from_pair(inner)),
                 _ => todo!()
             }
         }
 
         let insignia = insignia.expect("deve ter uma insignia");
-        Totem { insignia, aspects }
+        Totem { insignia, folklores: aspects }
     }
 
     pub fn from_string(input: String) -> Result<Self, Box<dyn std::error::Error>> {

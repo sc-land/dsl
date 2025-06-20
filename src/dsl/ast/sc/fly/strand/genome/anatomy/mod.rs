@@ -56,7 +56,7 @@ mod tests {
         match anatomy {
             Anatomy::Totem(totem) => {
                 assert_eq!(totem.insignia.raw, "Stage", "Totem insignia should be Stage");
-                assert!(!totem.aspects.is_empty(), "Totem should have aspects");
+                assert!(!totem.folklores.is_empty(), "Totem should have aspects");
             }
             Anatomy::Bug(_) => panic!("Expected Totem, got Bug")
         }
@@ -83,7 +83,7 @@ mod tests {
                 assert!(!bug.genes.is_empty(), "Bug should have genes");
                 assert!(!bug.ethics.is_empty(), "Bug should have ethics");
             }
-            Anatomy::Totem(_totem) => todo!()
+            Anatomy::Totem(_) => panic!("Expected Bug, got Totem")
         }
     }
 
@@ -105,7 +105,7 @@ mod tests {
                 assert_eq!(bug.genes.len(), 1, "Bug should have exactly 1 gene");
                 assert_eq!(bug.ethics.len(), 4, "Bug should have exactly 4 ethics");
             }
-            Anatomy::Totem(_totem) => todo!()
+            Anatomy::Totem(_) => panic!("Expected Bug, got Totem")
         }
     }
 
@@ -143,7 +143,7 @@ mod tests {
                 assert_eq!(bug.genes.len(), 2);
                 assert_eq!(bug.ethics.len(), 0);
             }
-            Anatomy::Totem(_totem) => todo!()
+            Anatomy::Totem(_) => panic!("Expected Bug, got Totem")
         }
     }
 }
