@@ -7,13 +7,13 @@ use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::ethics::matrix::Matr
 use crate::dsl::parser::parser::Rule;
 use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::ethics::signature::Signature;
 use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::specie::Specie;
-use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::tag::Tag;
+use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::primor::Primor;
 use crate::dsl::ast::sc::fly::strand::genome::behavior::EthicsBind;
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Ethics {
-    pub tag: Tag,
+    pub primor: Primor,
     pub signature: Option<Signature>,
     pub feedback: Option<Specie>,
     pub body: Option<Matrix>,
@@ -26,15 +26,15 @@ impl Ethics {
         assert_eq!(pair.as_rule(), Rule::ethics);
 
         let mut inner = pair.into_inner();
-        let mut tag = None;
+        let mut primor = None;
         let mut signature = None;
         let mut feedback = None;
         let mut body = None;
 
         while let Some(inner_pair) = inner.next() {
             match inner_pair.as_rule() {
-                Rule::tag => {
-                    tag = Some(Tag::new(inner_pair.as_str().to_string()));
+                Rule::primor => {
+                    primor = Some(Primor::new(inner_pair.as_str().to_string()));
                 }
                 Rule::signature => {
                     signature = Some(Signature::from_pair(inner_pair));
@@ -50,7 +50,7 @@ impl Ethics {
         }
 
         Ethics {
-            tag: tag.expect("Ethics must have a tag"),
+            primor: primor.expect("Ethics must have a tag"),
             signature,
             feedback,
             body
@@ -107,7 +107,7 @@ mod tests {
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
         // Verifica que os atributos básicos foram extraídos corretamente
-        assert_eq!(ethics.tag.raw, "corre", "O tag do ethics deve ser 'corre'");
+        assert_eq!(ethics.primor.raw, "corre", "O tag do ethics deve ser 'corre'");
         assert!(ethics.signature.is_none(), "Ethics não deve ter assinatura");
         assert!(ethics.feedback.is_none(), "Ethics não deve ter retorno/feedback");
 
@@ -126,7 +126,7 @@ mod tests {
         let input = fs::read_to_string("tests/fixtures/fragments/ethics/simple_ethics.sc").expect("Failed to read simple_ethics fragment");
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
-        assert_eq!(ethics.tag.raw, "simple_method");
+        assert_eq!(ethics.primor.raw, "simple_method");
         assert!(ethics.signature.is_none());
         assert!(ethics.feedback.is_none());
         assert!(ethics.body.is_none());
@@ -137,7 +137,7 @@ mod tests {
         let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_with_feedback.sc").expect("Failed to read ethics_with_feedback fragment");
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
-        assert_eq!(ethics.tag.raw, "method_with_return");
+        assert_eq!(ethics.primor.raw, "method_with_return");
         assert!(ethics.signature.is_none());
         assert!(ethics.feedback.is_some());
         assert!(ethics.body.is_none());
@@ -151,7 +151,7 @@ mod tests {
         let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_with_signature.sc").expect("Failed to read ethics_with_signature fragment");
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
-        assert_eq!(ethics.tag.raw, "method_with_params");
+        assert_eq!(ethics.primor.raw, "method_with_params");
         assert!(ethics.signature.is_some());
         assert!(ethics.feedback.is_none());
         assert!(ethics.body.is_none());
@@ -189,7 +189,7 @@ mod tests {
         let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_with_signature_and_feedback.sc").expect("Failed to read ethics_with_signature_and_feedback fragment");
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
-        assert_eq!(ethics.tag.raw, "full_method");
+        assert_eq!(ethics.primor.raw, "full_method");
         assert!(ethics.signature.is_some());
         assert!(ethics.feedback.is_some());
         assert!(ethics.body.is_none());
@@ -213,7 +213,7 @@ mod tests {
 
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
-        assert_eq!(ethics.tag.raw, "simple_method");
+        assert_eq!(ethics.primor.raw, "simple_method");
         assert!(ethics.signature.is_none());
         assert!(ethics.feedback.is_none());
         assert!(ethics.body.is_none());
@@ -247,7 +247,7 @@ mod tests {
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
         let cloned = ethics.clone();
 
-        assert_eq!(ethics.tag.raw, cloned.tag.raw);
+        assert_eq!(ethics.primor.raw, cloned.primor.raw);
         assert_eq!(ethics.signature.is_some(), cloned.signature.is_some());
         assert_eq!(ethics.feedback.is_some(), cloned.feedback.is_some());
         assert_eq!(ethics.body.is_some(), cloned.body.is_some());

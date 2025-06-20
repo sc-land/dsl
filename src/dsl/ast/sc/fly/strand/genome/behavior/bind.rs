@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
 use super::trace::Trace;
 use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::specie::Specie;
-use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::tag::Tag;
+use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::primor::Primor;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Bind {
-    pub tag: Tag,
+    pub tag: Primor,
     pub oop: Trace,
 }
 
@@ -19,7 +19,7 @@ impl Bind {
 
         // Parse tag
         let tag_pair = inner.next().expect("Bind deve ter uma tag");
-        let tag = Tag::from_pair(tag_pair);
+        let tag = Primor::from_pair(tag_pair);
 
         // Parse oop
         let oop_pair = inner.next().expect("Bind deve ter um oop");
@@ -41,7 +41,7 @@ impl Bind {
 /// EthicsBind represents function parameter bindings that use species instead of oop
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EthicsBind {
-    pub tag: Tag,
+    pub tag: Primor,
     pub specie: Specie,
 }
 
@@ -53,7 +53,7 @@ impl EthicsBind {
 
         // Parse tag
         let tag_pair = inner.next().expect("EthicsBind deve ter uma tag");
-        let tag = Tag::from_pair(tag_pair);
+        let tag = Primor::from_pair(tag_pair);
 
         // Parse specie
         let specie_pair = inner.next().expect("EthicsBind deve ter uma specie");

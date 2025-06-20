@@ -125,25 +125,25 @@ mod tests {
 
         // Verifica os genes
         assert_eq!(bug.genes.len(), 1, "Bug should have 1 gene");
-        assert_eq!(bug.genes[0].tag.raw, "x", "Gene should be named 'x'");
+        assert_eq!(bug.genes[0].primor.raw, "x", "Gene should be named 'x'");
         assert_eq!(bug.genes[0].specie.raw, "Int", "Gene 'x' should have type Int");
 
         // Verifica os métodos de ethics
         assert_eq!(bug.ethics.len(), 4, "Bug should have 4 ethics methods");
 
         // Encontra os ethics pelo nome
-        let simple_method = &bug.ethics.iter().find(|e| e.tag.raw == "simple_method").expect("simple_method not found");
-        let test_method = &bug.ethics.iter().find(|e| e.tag.raw == "test_method").expect("test_method not found");
-        let test_method2 = &bug.ethics.iter().find(|e| e.tag.raw == "test_method2").expect("test_method2 not found");
-        let test_method3 = &bug.ethics.iter().find(|e| e.tag.raw == "test_method3").expect("test_method3 not found");
+        let simple_method = &bug.ethics.iter().find(|e| e.primor.raw == "simple_method").expect("simple_method not found");
+        let test_method = &bug.ethics.iter().find(|e| e.primor.raw == "test_method").expect("test_method not found");
+        let test_method2 = &bug.ethics.iter().find(|e| e.primor.raw == "test_method2").expect("test_method2 not found");
+        let test_method3 = &bug.ethics.iter().find(|e| e.primor.raw == "test_method3").expect("test_method3 not found");
 
         // Verifica simple_method
-        assert_eq!(simple_method.tag.raw, "simple_method", "First ethics should be named 'simple_method'");
+        assert_eq!(simple_method.primor.raw, "simple_method", "First ethics should be named 'simple_method'");
         assert!(simple_method.signature.is_none(), "simple_method should have no signature");
         assert!(simple_method.body.is_none(), "simple_method should not have a body");
 
         // Verifica test_method
-        assert_eq!(test_method.tag.raw, "test_method", "Ethics should be named 'test_method'");
+        assert_eq!(test_method.primor.raw, "test_method", "Ethics should be named 'test_method'");
         assert!(test_method.body.is_some(), "test_method should have a body");
 
         if let Some(body) = &test_method.body {
@@ -152,13 +152,13 @@ mod tests {
         }
 
         // Verifica test_method2
-        assert_eq!(test_method2.tag.raw, "test_method2", "Ethics should be named 'test_method2'");
+        assert_eq!(test_method2.primor.raw, "test_method2", "Ethics should be named 'test_method2'");
         assert!(test_method2.signature.is_some(), "test_method2 should have a signature");
         assert!(test_method2.body.is_some(), "test_method2 should have a body");
 
 
         // Verifica test_method3 com parâmetros e feedback
-        assert_eq!(test_method3.tag.raw, "test_method3", "Ethics should be named 'test_method3'");
+        assert_eq!(test_method3.primor.raw, "test_method3", "Ethics should be named 'test_method3'");
         assert!(test_method3.signature.is_some(), "test_method3 should have a signature");
         assert!(test_method3.feedback.is_some(), "test_method3 should have a feedback type");
 

@@ -88,8 +88,8 @@ mod tests {
             Anatomy::Bug(bug) => {
                 assert_eq!(bug.specie.raw, "Cat", "Bug species should be Cat");
                 assert_eq!(bug.genes.len(), 2, "Bug should have exactly 2 genes");
-                assert_eq!(bug.genes[0].tag.raw, "energia", "First gene should be energia");
-                assert_eq!(bug.genes[1].tag.raw, "folego", "Second gene should be folego");
+                assert_eq!(bug.genes[0].primor.raw, "energia", "First gene should be energia");
+                assert_eq!(bug.genes[1].primor.raw, "folego", "Second gene should be folego");
                 assert_eq!(bug.ethics.len(), 0, "Bug should have no ethics");
             }
             Anatomy::Totem(_totem) => todo!()

@@ -2,15 +2,15 @@ use pest::iterators::Pair;
 use pest::Parser;
 use serde::{Deserialize, Serialize};
 use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::specie::Specie;
-use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::tag::Tag;
+use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::primor::Primor;
 use crate::dsl::parser::parser::{Rule, SCP};
 
-pub mod tag;
+pub mod primor;
 pub mod specie;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Gene {
-    pub tag: Tag,
+    pub primor: Primor,
     pub specie: Specie,
 }
 
@@ -24,7 +24,7 @@ impl Gene {
             .expect("Gene deve ter uma tag")
             .as_str()
             .to_string();
-        let tag = Tag::new(tag_str);
+        let tag = Primor::new(tag_str);
 
         let specie_str = inner.next()
             .expect("Gene deve ter uma espécie")
@@ -32,7 +32,7 @@ impl Gene {
             .to_string();
         let specie = Specie::new(specie_str);
 
-        Gene { tag, specie }
+        Gene { primor: tag, specie }
     }
 
     pub fn from_string(input: String) -> Self {

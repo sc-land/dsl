@@ -1,13 +1,13 @@
 use pest::iterators::Pair;
 use serde::{Deserialize, Serialize};
 use crate::dsl::parser::parser::Rule;
-use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::tag::Tag;
+use crate::dsl::ast::sc::fly::strand::genome::anatomy::bug::gene::primor::Primor;
 use crate::dsl::ast::sc::fly::strand::genome::behavior::trace::Trace;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Pollinate {
     pub raw: String,
-    pub tag: Tag,
+    pub tag: Primor,
     pub oop: Trace,
 }
 
@@ -20,7 +20,7 @@ impl Pollinate {
 
         // Parse tag
         let tag_pair = inner.next().expect("Assign deve ter uma tag");
-        let tag = Tag::from_pair(tag_pair);
+        let tag = Primor::from_pair(tag_pair);
 
         // Skip the "=" symbol (it's not captured as a rule)
 
