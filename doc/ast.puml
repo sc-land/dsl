@@ -35,10 +35,15 @@ package ast {
     Anatomy --> Totem
 
     class Totem {
-        +insignia Specie
+        +insignia Insignia
         +folklores Folklore[]
     }
+    Totem --> Insignia
     Totem --> Folklore
+
+    class Insignia {
+        +raw Str
+    }
 
     class Folklore {
         +prophecy Str
@@ -93,12 +98,14 @@ package ast {
 
     enum Forager {
         Specie
-        Tag
+        Primor
         Literal
+        SelfRef
     }
     Forager --> Literal
-    Forager --> Tag
+    Forager --> Primor
     Forager --> Specie
+    Forager --> SelfRef
 
     enum Course {
         Carrier
@@ -108,10 +115,10 @@ package ast {
     Course --> Catalysis
 
     class Pollinate {
-        +tag Tag
+        +primor Primor
         +trace Trace
     }
-    Pollinate --> Tag
+    Pollinate --> Primor
     Pollinate --> Trace
 
     class Nectar {
@@ -146,11 +153,11 @@ package ast {
     Swirl --> Matrix
 
     class Crawl {
-        +tag Tag
+        +primor Primor
         +trace Trace
         +matrix Matrix
     }
-    Crawl --> Tag
+    Crawl --> Primor
     Crawl --> Trace
     Crawl --> Matrix
 
@@ -165,10 +172,10 @@ package ast {
     Signal --> Behavior
 
     class Catalysis {
-        +tag Tag
+        +primor Primor
         +carrier Carrier?
     }
-    Catalysis --> Tag
+    Catalysis --> Primor
     Catalysis --> Carrier
 
     class Carrier {
@@ -189,14 +196,14 @@ package ast {
     Binds --> Bind
 
     class Bind {
-        +tag Tag
+        +primor Primor
         +trace Trace
     }
-    Bind --> Tag
+    Bind --> Primor
     Bind --> Trace
 
     class Sequence {
-        +traces Trace[]
+        +oops Trace[]
     }
     Sequence --> Trace
 
@@ -210,34 +217,34 @@ package ast {
     Bug --> Ethics
 
     class Gene {
-        +tag Tag
+        +primor Primor
         +specie Specie
     }
-    Gene --> Tag
+    Gene --> Primor
     Gene --> Specie
 
     class Ethics {
-        +tag Tag
+        +primor Primor
         +signature Signature?
-        +feedback Specie?
+        +feedback Feedback?
         +matrix Matrix?
     }
-    Ethics --> Tag
+    Ethics --> Primor
     Ethics --> Signature
-    Ethics --> Specie
+    Ethics --> Feedback
     Ethics --> Matrix
 
     class Signature {
-        +intakes Intake[]
+        +binds EthicsBind[]?
     }
-    Signature --> Intake
+    Signature --> EthicsBind
 
-    class Intake {
-        +tag Tag
+    class EthicsBind {
+        +primor Primor
         +specie Specie
     }
-    Intake --> Tag
-    Intake --> Specie
+    EthicsBind --> Primor
+    EthicsBind --> Specie
 
     enum Literal {
         Bit
@@ -251,7 +258,15 @@ package ast {
         +raw Str
     }
 
-    class Tag {
+    class Primor {
+        +raw Str
+    }
+
+    class Feedback {
+        +raw Str
+    }
+
+    class SelfRef {
         +raw Str
     }
 }
