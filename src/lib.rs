@@ -1,10 +1,11 @@
-pub mod dsl;
+pub mod ast;
+pub mod parser;
 
 #[cfg(test)]
 mod test {
-    use crate::dsl::ast::sc::fly::strand::genome::anatomy::Anatomy;
-    use crate::dsl::ast::sc::fly::strand::genome::Genome;
-    use crate::dsl::parser::tree::Tree;
+    use crate::ast::sc::fly::strand::genome::anatomy::Anatomy;
+    use crate::ast::sc::fly::strand::genome::Genome;
+    use crate::parser::tree::Tree;
 
     #[test]
     fn test_complete_parsing_flow() {

@@ -108,7 +108,7 @@ valor = objeto.metodo1().metodo2(param: "test")
 
 ## 🏗️ Estrutura do Projeto
 
-- **Grammar**: Gramática Pest em [`src/dsl/sc.dsl`](src/dsl/sc.dsl)
+- **Grammar**: Gramática Pest em [`src/dsl/sc.dsl`](src/sc.dsl)
 - **AST**: Árvore sintática hierárquica em [`src/dsl/ast/sc/`](src/dsl/ast/sc/)
 - **Parser**: Implementação do parser em [`src/dsl/parser/`](src/dsl/parser/)
 - **Tests**: Testes unitários e de integração em [`tests/`](tests/)
@@ -204,7 +204,7 @@ assert!(result.is_ok());
 
 - **AST**: Documentação completa da AST em [`doc/ast.md`](doc/ast.md)
 - **Diagrama PlantUML**: Visualização da estrutura em [`doc/ast.puml`](doc/ast.puml)
-- **Grammar**: Especificação formal em [`src/dsl/sc.dsl`](src/dsl/sc.dsl)
+- **Grammar**: Especificação formal em [`src/dsl/sc.dsl`](src/sc.dsl)
 - **Examples**: Exemplos práticos em [`examples/`](examples/)
 
 ## 🚀 Próximos Passos

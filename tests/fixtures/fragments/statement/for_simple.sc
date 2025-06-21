@@ -4,3 +4,4 @@ bug TestBug
       item = 1
     end
   end
+end

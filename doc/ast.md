@@ -187,4 +187,4 @@ src/dsl/ast/sc/
 
 Para uma visualização completa da estrutura da AST, consulte:
 - **PlantUML**: [`doc/ast.puml`](ast.puml) - Diagrama detalhado da hierarquia
-- **Gramática**: [`src/dsl/sc.dsl`](../src/dsl/sc.dsl) - Especificação formal da sintaxe
+- **Gramática**: [`src/dsl/sc.dsl`](../src/sc.dsl) - Especificação formal da sintaxe
