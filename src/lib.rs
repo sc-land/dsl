@@ -12,7 +12,7 @@ mod test {
         // Testa o fluxo completo de parsing com um programa válido
         let input = r#"bug TestBug
         gene x Int
-        ethics test(a: Int) Int
+        ethics test(Int, Int) Int
             a.plus(1)
         end
     end

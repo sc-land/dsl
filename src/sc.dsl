@@ -31,13 +31,14 @@ entity      =  { primor ~ i ~ ":" ~ i ~ specie }
 // ANATOMY - BUG DEFINITIONS
 // ========================================
 bug  = { "bug" ~ i ~ specie ~ i ~ (gene | ethics)* ~ i ~ "end" }
-gene = { "gene" ~ i ~ primor ~ i ~ specie ~ i }
+gene = { "gene" ~ i ~ primor ~ i ~ specie ~ i ~ seals? ~ i }
+seals = { trace ~ (i ~ "," ~ i ~ trace)* }
 
 // Ethics (functions/methods) - suporte a todos os casos
 ethics           =  { ethics_head_body | ethics_head }
 ethics_head      = _{ "ethics" ~ i ~ primor ~ i ~ (signature ~ i ~ feedback | signature | feedback)? ~ i }
 ethics_head_body = _{ ethics_head ~ ethics_body }
-signature        =  { "(" ~ i ~ ethics_binds? ~ i ~ ")" }
+signature        =  { "(" ~ i ~ (ethics_binds |  sequence  )? ~ i ~ ")" }
 feedback         = @{ specie }
 ethics_body      = _{ i ~ matrix ~ i ~ "end" ~ i }
 
