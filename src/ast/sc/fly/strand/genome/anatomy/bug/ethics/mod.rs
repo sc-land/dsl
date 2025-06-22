@@ -7,7 +7,6 @@ use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::matrix::Matrix;
 use crate::parser::parser::Rule;
 use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::signature::Signature;
 use crate::ast::sc::fly::strand::genome::anatomy::bug::gene::primor::Primor;
-use crate::ast::sc::fly::strand::genome::behavior::EthicsBind;
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -88,7 +87,7 @@ impl Feedback {
 #[cfg(test)]
 mod tests {
     use std::fs;
-    use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::{matrix::signal::Signal, Ethics};
+    use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::{matrix::signal::Signal, Ethics, signature::Signature};
 
 
     #[test]
@@ -149,12 +148,14 @@ mod tests {
         assert!(ethics.body.is_none());
 
         let signature = ethics.signature.as_ref().expect("Should have signature");
-        assert!(signature.binds.is_some());
-
-        let binds = signature.binds.as_ref().expect("Should have binds");
-        assert_eq!(binds.len(), 1);
-        assert_eq!(binds[0].tag.raw, "param1");
-        assert_eq!(binds[0].specie.raw, "Int");
+        match signature {
+            Signature::EthicsBinds(binds) => {
+                assert_eq!(binds.len(), 1);
+                assert_eq!(binds[0].tag.raw, "param1");
+                assert_eq!(binds[0].specie.raw, "Int");
+            }
+            _ => panic!("Expected EthicsBinds signature")
+        }
     }
 
     #[test]
@@ -163,17 +164,21 @@ mod tests {
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
         let signature = ethics.signature.as_ref().expect("Should have signature");
-        let binds = signature.binds.as_ref().expect("Should have binds");
-        assert_eq!(binds.len(), 2);
+        match signature {
+            Signature::EthicsBinds(binds) => {
+                assert_eq!(binds.len(), 2);
 
-        // Test individual bind methods
-        let first_bind = &binds[0];
-        assert_eq!(first_bind.tag.raw, "param1");
-        assert_eq!(first_bind.specie.raw, "Int");
+                // Test individual bind methods
+                let first_bind = &binds[0];
+                assert_eq!(first_bind.tag.raw, "param1");
+                assert_eq!(first_bind.specie.raw, "Int");
 
-        let second_bind = &binds[1];
-        assert_eq!(second_bind.tag.raw, "param2");
-        assert_eq!(second_bind.specie.raw, "String");
+                let second_bind = &binds[1];
+                assert_eq!(second_bind.tag.raw, "param2");
+                assert_eq!(second_bind.specie.raw, "String");
+            }
+            _ => panic!("Expected EthicsBinds signature")
+        }
     }
 
     #[test]
@@ -188,10 +193,12 @@ mod tests {
 
         // Test signature
         let signature = ethics.signature.as_ref().expect("Should have signature");
-        assert!(signature.binds.is_some());
-
-        let binds = signature.binds.as_ref().expect("Should have binds");
-        assert_eq!(binds.len(), 2);
+        match signature {
+            Signature::EthicsBinds(binds) => {
+                assert_eq!(binds.len(), 2);
+            }
+            _ => panic!("Expected EthicsBinds signature")
+        }
 
         // Test feedback
         let feedback = ethics.feedback.as_ref().expect("Should have feedback");
@@ -230,7 +237,12 @@ mod tests {
         let signature = ethics.signature.as_ref().expect("Should have signature");
 
         // Test signature methods
-        assert!(signature.binds.is_none()); // Empty params
+        match signature {
+            Signature::EthicsBinds(binds) => {
+                assert_eq!(binds.len(), 0); // Empty params
+            }
+            _ => panic!("Expected EthicsBinds signature")
+        }
     }
 
     #[test]

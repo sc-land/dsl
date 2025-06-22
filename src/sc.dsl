@@ -93,7 +93,7 @@ transport = { binds | sequence }
 binds        =  { bind ~ (i ~ "," ~ i ~ bind)* }
 sequence     =  { trace ~ (i ~ "," ~ i ~ trace)* }
 bind         =  { primor ~ i ~ ":" ~ i ~ trace }
-ethics_binds = _{ ethics_bind ~ (i ~ "," ~ i ~ ethics_bind)* }
+ethics_binds =  { ethics_bind ~ (i ~ "," ~ i ~ ethics_bind)* }
 ethics_bind  =  { primor ~ i ~ ":" ~ i ~ specie }
 
 // ========================================
