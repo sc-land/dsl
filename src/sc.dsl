@@ -15,6 +15,7 @@ genome = { anatomy | behavior }
 // ========================================
 anatomy  = { bug | totem }
 behavior = { assign | beat | trace }
+
 // ========================================
 // ANATOMY - TOTEM DEFINITIONS
 // ========================================
@@ -35,12 +36,11 @@ gene = { "gene" ~ i ~ primor ~ i ~ specie ~ i ~ seals? ~ i }
 seals = { trace ~ (i ~ "," ~ i ~ trace)* }
 
 // Ethics (functions/methods) - suporte a todos os casos
-ethics           =  { ethics_head_body | ethics_head }
-ethics_head      = _{ "ethics" ~ i ~ primor ~ i ~ (signature ~ i ~ feedback | signature | feedback)? ~ i }
-ethics_head_body = _{ ethics_head ~ ethics_body }
-signature        =  { "(" ~ i ~ (ethics_binds |  sequence  )? ~ i ~ ")" }
+ethics           =  { operative | nominal }
+nominal          = _{ "ethics" ~ i ~ primor ~ i ~ (manifest ~ i ~ feedback | manifest | feedback)? ~ i }
+operative        = _{ nominal ~ i ~ matrix ~ i ~ "end" ~ i }
+manifest         =  { "(" ~ i ~ ( pacts |  march )? ~ i ~ ")" }
 feedback         = @{ specie }
-ethics_body      = _{ i ~ matrix ~ i ~ "end" ~ i }
 
 // ========================================
 // CODE BLOCKS
@@ -87,14 +87,14 @@ course  = { catalysis | carrier }
 // Method calls and property access
 catalysis = { "." ~ primor ~ carrier? }
 carrier   = { "(" ~ transport? ~ ")" }
-transport = { binds | sequence }
+transport = { binds | march }
 
 // Function parameters and arguments
 binds        =  { bind ~ (i ~ "," ~ i ~ bind)* }
-sequence     =  { trace ~ (i ~ "," ~ i ~ trace)* }
+march        =  { trace ~ (i ~ "," ~ i ~ trace)* }
 bind         =  { primor ~ i ~ ":" ~ i ~ trace }
-ethics_binds =  { ethics_bind ~ (i ~ "," ~ i ~ ethics_bind)* }
-ethics_bind  =  { primor ~ i ~ ":" ~ i ~ specie }
+pacts        =  { pact ~ (i ~ "," ~ i ~ pact)* }
+pact  =  { primor ~ i ~ ":" ~ i ~ specie }
 
 // ========================================
 // LITERALS

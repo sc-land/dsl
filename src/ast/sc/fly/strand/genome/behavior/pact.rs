@@ -40,14 +40,14 @@ impl Bind {
 
 /// EthicsBind represents function parameter bindings that use species instead of oop
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct EthicsBind {
+pub struct Pact {
     pub tag: Primor,
     pub specie: Specie,
 }
 
-impl EthicsBind {
+impl Pact {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
-        assert_eq!(pair.as_rule(), Rule::ethics_bind);
+        assert_eq!(pair.as_rule(), Rule::pact);
 
         let mut inner = pair.into_inner();
 
@@ -59,6 +59,6 @@ impl EthicsBind {
         let specie_pair = inner.next().expect("EthicsBind deve ter uma specie");
         let specie = Specie::new(specie_pair.as_str().to_string());
 
-        EthicsBind { tag, specie }
+        Pact { tag, specie }
     }
 }

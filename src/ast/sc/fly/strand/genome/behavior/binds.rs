@@ -1,7 +1,7 @@
 use pest::iterators::Pair;
 use serde::{Deserialize, Serialize};
 use crate::parser::parser::Rule;
-use super::bind::{Bind, EthicsBind};
+use super::pact::{Bind, Pact};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Binds {
@@ -11,7 +11,7 @@ pub struct Binds {
 /// EthicsBinds represents function parameter bindings for ethics functions
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EthicsBinds {
-    pub binds: Vec<EthicsBind>,
+    pub binds: Vec<Pact>,
 }
 
 impl Binds {

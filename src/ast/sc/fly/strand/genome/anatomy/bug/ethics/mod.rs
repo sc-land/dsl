@@ -1,18 +1,18 @@
-pub mod signature;
+pub mod manifest;
 pub mod matrix;
 
 use pest::iterators::Pair;
 use serde::{Deserialize, Serialize};
 use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::matrix::Matrix;
 use crate::parser::parser::Rule;
-use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::signature::Signature;
+use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::manifest::Manifest;
 use crate::ast::sc::fly::strand::genome::anatomy::bug::gene::primor::Primor;
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Ethics {
     pub primor: Primor,
-    pub signature: Option<Signature>,
+    pub signature: Option<Manifest>,
     pub feedback: Option<Feedback>,
     pub body: Option<Matrix>,
 }
@@ -34,8 +34,8 @@ impl Ethics {
                 Rule::primor => {
                     primor = Some(Primor::new(inner_pair.as_str().to_string()));
                 }
-                Rule::signature => {
-                    signature = Some(Signature::from_pair(inner_pair));
+                Rule::manifest => {
+                    signature = Some(Manifest::from_pair(inner_pair));
                 }
                 Rule::feedback => {
                     feedback = Some(Feedback::from_pair(inner_pair));
@@ -87,7 +87,7 @@ impl Feedback {
 #[cfg(test)]
 mod tests {
     use std::fs;
-    use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::{matrix::signal::Signal, Ethics, signature::Signature};
+    use crate::ast::sc::fly::strand::genome::anatomy::bug::ethics::{matrix::signal::Signal, Ethics, manifest::Manifest};
 
 
     #[test]
@@ -147,14 +147,14 @@ mod tests {
         assert!(ethics.feedback.is_none());
         assert!(ethics.body.is_none());
 
-        let signature = ethics.signature.as_ref().expect("Should have signature");
+        let signature = ethics.signature.as_ref().expect("Should have manifest");
         match signature {
-            Signature::EthicsBinds(binds) => {
+            Manifest::Pacts(binds) => {
                 assert_eq!(binds.len(), 1);
                 assert_eq!(binds[0].tag.raw, "param1");
                 assert_eq!(binds[0].specie.raw, "Int");
             }
-            _ => panic!("Expected EthicsBinds signature")
+            _ => panic!("Expected EthicsBinds manifest")
         }
     }
 
@@ -163,9 +163,9 @@ mod tests {
         let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_with_multiple_params.sc").expect("Failed to read ethics_with_multiple_params fragment");
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
-        let signature = ethics.signature.as_ref().expect("Should have signature");
+        let signature = ethics.signature.as_ref().expect("Should have manifest");
         match signature {
-            Signature::EthicsBinds(binds) => {
+            Manifest::Pacts(binds) => {
                 assert_eq!(binds.len(), 2);
 
                 // Test individual bind methods
@@ -177,7 +177,7 @@ mod tests {
                 assert_eq!(second_bind.tag.raw, "param2");
                 assert_eq!(second_bind.specie.raw, "String");
             }
-            _ => panic!("Expected EthicsBinds signature")
+            _ => panic!("Expected EthicsBinds manifest")
         }
     }
 
@@ -191,13 +191,13 @@ mod tests {
         assert!(ethics.feedback.is_some());
         assert!(ethics.body.is_none());
 
-        // Test signature
-        let signature = ethics.signature.as_ref().expect("Should have signature");
+        // Test manifest
+        let signature = ethics.signature.as_ref().expect("Should have manifest");
         match signature {
-            Signature::EthicsBinds(binds) => {
+            Manifest::Pacts(binds) => {
                 assert_eq!(binds.len(), 2);
             }
-            _ => panic!("Expected EthicsBinds signature")
+            _ => panic!("Expected EthicsBinds manifest")
         }
 
         // Test feedback
@@ -234,14 +234,14 @@ mod tests {
         let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_signature_methods.sc").expect("Failed to read ethics_signature_methods fragment");
         let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
 
-        let signature = ethics.signature.as_ref().expect("Should have signature");
+        let signature = ethics.signature.as_ref().expect("Should have manifest");
 
-        // Test signature methods
+        // Test manifest methods
         match signature {
-            Signature::EthicsBinds(binds) => {
+            Manifest::Pacts(binds) => {
                 assert_eq!(binds.len(), 0); // Empty params
             }
-            _ => panic!("Expected EthicsBinds signature")
+            _ => panic!("Expected EthicsBinds manifest")
         }
     }
 
@@ -294,6 +294,23 @@ mod tests {
                 },
                 _ => panic!("Esperava-se um comportamento do tipo Assign")
             }
+        }
+    }
+
+    #[test]
+    fn test_ethics_with_sequence_signature() {
+        let input = fs::read_to_string("tests/fixtures/fragments/ethics/ethics_with_sequence_signature.sc")
+            .expect("Failed to read ethics with sequence manifest fragment");
+        let ethics = Ethics::from_string(input.clone()).expect("Failed to parse ethics");
+
+        // Test manifest
+        let signature = ethics.signature.as_ref().expect("Should have manifest");
+        match signature {
+            Manifest::March(traces) => {
+                assert_eq!(traces.len(), 2);
+                // TODO: Add more specific assertions about the traces
+            }
+            _ => panic!("Expected Sequence manifest")
         }
     }
 }

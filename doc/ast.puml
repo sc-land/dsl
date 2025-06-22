@@ -219,7 +219,7 @@ package ast {
 
     enum obj.method.Manifest {
         Pacts(Pact[])
-        Aura(Specie[]))
+        March(Specie[]))
     }
     Manifest --> obj.method.Pact
 

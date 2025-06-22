@@ -1,14 +1,14 @@
 use pest::iterators::Pair;
 use serde::{Deserialize, Serialize};
 use crate::ast::sc::fly::strand::genome::behavior::Binds;
-use crate::ast::sc::fly::strand::genome::behavior::sequence::Sequence;
+use crate::ast::sc::fly::strand::genome::behavior::march::March;
 use crate::parser::parser::Rule;
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Transport {
     Binds(Binds),
-    Sequence(Sequence),
+    Sequence(March),
 }
 
 impl Transport {
@@ -18,7 +18,7 @@ impl Transport {
         let inner_pair = pair.into_inner().next().expect("Transport deve ter uma regra interna");
         match inner_pair.as_rule() {
             Rule::binds => Transport::Binds(Binds::from_pair(inner_pair)),
-            Rule::sequence => Transport::Sequence(Sequence::from_pair(inner_pair)),
+            Rule::march => Transport::Sequence(March::from_pair(inner_pair)),
             _ => panic!("Regra inesperada dentro de transport: {:?}", inner_pair.as_rule()),
         }
     }
@@ -47,7 +47,7 @@ impl Transport {
         }
     }
 
-    pub fn as_sequence(&self) -> Option<&Sequence> {
+    pub fn as_sequence(&self) -> Option<&March> {
         match self {
             Transport::Sequence(sequence) => Some(sequence),
             _ => None,

@@ -2,8 +2,8 @@ pub mod assign;
 pub mod trace;
 pub mod transport;
 pub mod binds;
-pub mod bind;
-pub mod sequence;
+pub mod pact;
+pub mod march;
 pub mod beat;
 
 use pest::{iterators::Pair, Parser};
@@ -14,7 +14,7 @@ use self::trace::Trace;
 
 // Re-export Trail types for easier access
 pub use binds::{Binds, EthicsBinds};
-pub use bind::{Bind, EthicsBind};
+pub use pact::{Bind, Pact};
 use crate::ast::sc::fly::strand::genome::behavior::beat::Beat;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

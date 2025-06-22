@@ -4,13 +4,13 @@ use crate::parser::parser::Rule;
 use super::trace::Trace;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Sequence {
+pub struct March {
     pub oops: Vec<Trace>,
 }
 
-impl Sequence {
+impl March {
     pub fn from_pair(pair: Pair<Rule>) -> Self {
-        assert_eq!(pair.as_rule(), Rule::sequence);
+        assert_eq!(pair.as_rule(), Rule::march);
 
         let mut oops = Vec::new();
         for oop_pair in pair.into_inner() {
@@ -19,16 +19,16 @@ impl Sequence {
             }
         }
 
-        Sequence { oops }
+        March { oops }
     }
 
     pub fn from_string(input: String) -> Result<Self, Box<dyn std::error::Error>> {
         use pest::Parser;
         use crate::parser::parser::SCP;
 
-        let mut pairs = SCP::parse(Rule::sequence, &input)?;
+        let mut pairs = SCP::parse(Rule::march, &input)?;
         let pair = pairs.next().ok_or("No pair found")?;
-        Ok(Sequence::from_pair(pair))
+        Ok(March::from_pair(pair))
     }
 
     pub fn get_oops(&self) -> &[Trace] {
