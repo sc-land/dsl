@@ -1,5 +1,5 @@
 pub mod carrier;
-mod catalysis;
+pub mod catalysis;
 
 use pest::iterators::Pair;
 use serde::{Deserialize, Serialize};

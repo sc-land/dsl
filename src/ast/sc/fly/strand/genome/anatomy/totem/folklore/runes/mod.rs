@@ -1,4 +1,4 @@
-mod entity;
+pub mod entity;
 
 use pest::iterators::Pair;
 use serde::{Deserialize, Serialize};

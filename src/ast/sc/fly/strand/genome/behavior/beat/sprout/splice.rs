@@ -8,7 +8,7 @@ use crate::parser::parser::Rule;
 pub struct Splice {
     pub raw: String,
     pub condition: Trace,
-    pub block: Matrix,
+    pub matrix: Matrix,
 }
 
 impl Splice {
@@ -26,12 +26,12 @@ impl Splice {
         let matrix_pair = pairs
             .next()
             .expect("Elsif block should have a matrix block");
-        let block = Matrix::from_pair(matrix_pair);
+        let matrix = Matrix::from_pair(matrix_pair);
 
         Splice {
             raw,
             condition,
-            block,
+            matrix,
         }
     }
 }

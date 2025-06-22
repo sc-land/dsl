@@ -1,4 +1,4 @@
-mod splice;
+pub mod splice;
 
 use pest::iterators::Pair;
 use serde::{Deserialize, Serialize};
@@ -53,7 +53,7 @@ impl Sprout {
                     elsif_blocks.push(Splice {
                         raw: raw_elsif,
                         condition: elsif_condition,
-                        block: elsif_matrix,
+                        matrix: elsif_matrix,
                     });
                 }
                 Rule::den => {
